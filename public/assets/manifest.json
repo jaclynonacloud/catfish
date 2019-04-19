@@ -1,0 +1,40 @@
+[
+    {
+        "src":"./assets/spritesheets/entities.js",
+        "id":"Entities"
+    },
+    {
+        "src":"./assets/spritesheets/ui.js",
+        "id":"UI"
+    },
+    {
+        "src":"./assets/spritesheets/cat_spritesheet.js",
+        "id":"Cat_Spritesheet"
+    },
+    {
+        "src":"./assets/spritesheets/fish_spritesheet.js",
+        "id":"Fish_Spritesheet"
+    },
+    {
+        "src":"./assets/spritesheets/typography.js",
+        "id":"Typography"
+    },
+    {
+        "src":"./assets/spritesheets/typography_white.js",
+        "id":"TypographyWhite"
+    },
+    {
+        "src":"./assets/spritesheets/menu_level_select.js",
+        "id":"Menu_Level_Select"
+    },
+
+
+    {
+        "src":"./assets/images/bg.png",
+        "id":"BG"
+    },
+    {
+        "src":"./assets/images/bg-top.png",
+        "id":"BGTop"
+    }
+]

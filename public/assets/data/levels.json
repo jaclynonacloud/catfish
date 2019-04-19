@@ -1,0 +1,67 @@
+{
+    "worlds" : [
+        [
+            { 
+                "name": "Welcome to the pond!", 
+                "data":[
+                    { "id":"fish", "x":100, "y":150, "speed":2 },
+                    { "id":"fish", "x":50, "y":300, "speed":4 },
+                    { "id":"fish", "x":250, "y":600, "speed":3, "flip":true }
+                ] 
+            },
+            { 
+                "name": "A new adventure!", 
+                "data":[
+                    { "id":"fish", "x":0, "y":0, "speed":3 },
+                    { "id":"fish", "x":100, "y":100, "speed":3 }
+                ]
+            },
+            { 
+                "name": "Learn to aim!", 
+                "data":[
+                    { "id":"fish", "x":0, "y":0, "speed":3 },
+                    { "id":"fish", "x":100, "y":100, "speed":3 }
+                ]
+            },
+            { 
+                "name": "Persephone!", 
+                "special":true,
+                "data":[
+                    { "id":"fish", "x":0, "y":0, "speed":3 },
+                    { "id":"fish", "x":100, "y":100, "speed":3 }
+                ]
+            }
+        ],
+        [
+            { 
+                "name": "In deep water!",
+                "data":[
+                    { "id":"fish", "x":0, "y":0, "speed":3 },
+                    { "id":"fish", "x":100, "y":100, "speed":3 }
+                ]
+            },
+            { 
+                "name": "An ocean of fish!",
+                "data":[
+                    { "id":"fish", "x":0, "y":0, "speed":3 },
+                    { "id":"fish", "x":100, "y":100, "speed":3 }
+                ]
+            },
+            { 
+                "name": "Barnacles ahoy!",
+                "data":[
+                    { "id":"fish", "x":0, "y":0, "speed":3 },
+                    { "id":"fish", "x":100, "y":100, "speed":3 }
+                ]
+            },
+            { 
+                "name": "Owen!", 
+                "special":true,
+                "data":[
+                    { "id":"fish", "x":0, "y":0, "speed":3 },
+                    { "id":"fish", "x":100, "y":100, "speed":3 }
+                ]
+            }
+        ]
+    ]
+}

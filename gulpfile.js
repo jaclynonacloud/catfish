@@ -25,28 +25,6 @@ gulp.task('copy-html', function () {
         .pipe(gulp.dest('public'));
 });
 
-// gulp.task('default', gulp.series(gulp.parallel('copy-html'), function () {
-//     return browserify({
-//         basedir: '.',
-//         debug: true,
-//         entries: ['src/main.ts'],
-//         cache: {},
-//         packageCache: {}
-//     })
-//     .plugin(tsify)
-//     .transform('babelify', {
-//         presets: ['es2015'],
-//         extensions: ['.ts']
-//     })
-//     .bundle()
-//     .pipe(source('bundle.js'))
-//     .pipe(buffer())
-//     .pipe(sourcemaps.init({loadMaps: true}))
-//     .pipe(sourcemaps.write('./'))
-//     .pipe(gulp.dest('public/js'));
-// }));
-
-
 function bundle() {
     return watchedBrowserify
         .transform('babelify', {

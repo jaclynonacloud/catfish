@@ -1,11 +1,26 @@
 import { Screen } from "./Screen";
 import { ScreenManager } from "../managers/ScreenManager";
+import { Container } from "../ui/display/Container";
+import { Sprites } from "../ui/Sprites";
+import { LoadManager } from "../managers/LoadManager";
 
 export class EndScreen extends Screen {
     private _splash:createjs.Shape;
+    private _mainContainer:Container;
     
     constructor() {
         super();
+
+        //setup main container
+        this._mainContainer = new Container();
+        this._mainContainer.addMany({
+            txtScoreStatic : Sprites.generateBitmapText("Score", LoadManager.Spritesheets.Typography),
+            txtScore : Sprites.generateBitmapText("0", LoadManager.Spritesheets.Typography),
+            logo : Sprites.Backgrounds.Logo,
+            btnMainMenu : Sprites.Buttons.NewGame,
+            btnNext : Sprites.Buttons.Options,
+        });
+        
     }
 
     /*--------------- METHODS ------------------------*/
@@ -13,21 +28,21 @@ export class EndScreen extends Screen {
     /*--------------- EVENTS -------------------------*/
     /*--------------- OVERRIDES ----------------------*/
     create(stage:createjs.StageGL):Screen {
-        //add stuff
-        this._splash = new createjs.Shape();
-        this._splash.graphics.beginFill("pink");
-        this._splash.graphics.drawRect(0, 0, 200, 100);
-        this._splash.graphics.endFill();
-        this._splash.cache(0, 0, 200, 100);
-        this._container.addChild(this._splash);
-        super.create(stage);
-
-         //for testing
+        
+        //set the score
+        this._mainContainer.Sprites['txtScore'] = Sprites.generateBitmapText("9999", LoadManager.Spritesheets.Typography);
+        
+        //add in the containers
+        this._mainContainer.checkoutSprites();
+        this._container.addChild(this._mainContainer.Container);
+        
+        //for testing
         (this._container as any).on("click", (e) => {
-            ScreenManager.setCurrentScreen("end", stage);
+            ScreenManager.setCurrentScreen("menu", stage);
         }, this, true);
+        
 
-        return null;
+        return super.create(stage);
     }
     /*--------------- GETTERS & SETTERS --------------*/
 }

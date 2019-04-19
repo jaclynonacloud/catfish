@@ -19,7 +19,6 @@ export class MenuScreen extends Screen {
     private _mainContainer:Container;
     private _clearedContainer:Container;
     private _optionsContainer:Container;
-    private _levelSelectContainer:Container;
 
     //custom containers
     private _levelSelectDisplay:LevelSelectDisplay;
@@ -173,7 +172,6 @@ export class MenuScreen extends Screen {
     public create(stage:createjs.StageGL):Screen {
 
         //add in the containers
-        this._staticContainer.checkoutSprites();
         this._staticContainer.Sprites.bg.y = 0;
         this._container.addChild(this._staticContainer.Container);
         this._container.addChild(this._swipeContainer);
@@ -181,12 +179,11 @@ export class MenuScreen extends Screen {
         this._swipeContainer.addChild(this._optionsContainer.Container);
         this._swipeContainer.addChild(this._clearedContainer.Container);
         // this._swipeContainer.addChild(this._levelSelectContainer.Container);
+
         
         this._swipeContainer.addChild(this._levelSelectDisplay.Container);
 
-        super.create(stage);
-
-        return null;
+        return super.create(stage);
     }
 
     public enable() {
@@ -226,6 +223,16 @@ export class MenuScreen extends Screen {
 
 
         this._levelSelectDisplay.disable();
+
+        this.reset();
+    }
+
+    public reset() {
+        //reset the position of the swipe container
+        this._swipeContainer.x = 0;
+        this._swipeContainer.y = 0;
+
+        super.reset();
     }
     /*--------------- GETTERS & SETTERS --------------*/
 }

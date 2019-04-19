@@ -40,6 +40,10 @@ export class Screen implements ICreateable<Screen>, IUpdateable, IEnableable {
     public disable() {
         
     }
+
+    public reset() {
+        
+    }
     /*--------------- ABSTRACTS ----------------------*/
     /*--------------- EVENTS -------------------------*/
     /*--------------- OVERRIDES ----------------------*/

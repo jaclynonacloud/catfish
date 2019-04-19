@@ -15,7 +15,7 @@ export class Container {
     /*--------------- METHODS ------------------------*/
     public add(key:string, sprite:createjs.DisplayObject, updateLayout:boolean=true):boolean {
         if(this._sprites[key] != null) return false;
-        this._sprites[key] = sprite;
+        this._sprites[key] = sprite.clone();
 
         if(updateLayout) this._layout.buildLayout(true, ...Object.keys(this._sprites).map(k => this._sprites[k]));
         return true;

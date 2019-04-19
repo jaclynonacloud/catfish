@@ -8,6 +8,7 @@ export class IntermediaryScreen extends Screen {
     private _game:Game;
     private _bg:createjs.Shape;
     private _textContainer:createjs.Container;
+    private _txtSprite:createjs.DisplayObject;
 
     private _text:string;
     
@@ -43,31 +44,45 @@ export class IntermediaryScreen extends Screen {
         this._textContainer = new createjs.Container();
         this._container.addChild(this._textContainer);
 
-        super.create(stage);
+        if(this._text != "") {
+            //create the text
+            this._txtSprite = Sprites.generateBitmapText(this._text, LoadManager.Spritesheets.TypographyWhite);
+            (this._txtSprite as any).scale = 0.6;
+            //load into container
+            this._textContainer.addChild(this._txtSprite);
+    
+            //put container at bottom
+            this._textContainer.x = (this._game.StageWidth / 2) - ((this._txtSprite.getBounds().width / 2) * 0.6);
+            this._textContainer.y = (this._game.StageHeight / 2) - (this._txtSprite.getBounds().height / 2);
+        }
+
+        return super.create(stage);
+    }
+
+    public destroy() {
+        this._textContainer.removeAllChildren();
+
+        return super.destroy();
+    }
+
+    public enable() {
+        super.enable();
 
         //for testing
         (this._container as any).on("click", (e) => {
-            ScreenManager.setCurrentScreen("menu", stage);
+            ScreenManager.setCurrentScreen("menu", this.Stage);
         }, this, true);
+    }
 
-        if(this._text != "") {
-            //create the text
-            const text = Sprites.generateBitmapText(this._text, LoadManager.Spritesheets.TypographyWhite);
-            (text as any).scale = 0.6;
-            // const text = createjs.Sprites.generateText(value);
-            //load into container
-            this._textContainer.removeAllChildren();
-            this._textContainer.addChild(text);
-    
-            //put container at bottom
-            this._textContainer.x = (this._game.StageWidth / 2) - ((text.getBounds().width / 2) * 0.6);
-            this._textContainer.y = (this._game.StageHeight / 2) - (text.getBounds().height / 2);
-        }
-        else {
-            this._textContainer.removeAllChildren();
-        }
+    public disable() {
+        super.disable();
 
-        return this;
+        this.reset();
+    }
+
+    public reset() {
+        this.Text = "";
+        super.reset();
     }
 
     /*--------------- GETTERS & SETTERS --------------*/

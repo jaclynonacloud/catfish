@@ -7,7 +7,14 @@ import { EndScreen } from "./screens/EndScreen";
 import { Logging } from "./Functions";
 import { Sprites } from "./ui/Sprites";
 import { IntermediaryScreen } from "./screens/IntermediaryScreen";
-import { DataManager } from "./managers/DataManager";
+import { DataManager, LevelData } from "./managers/DataManager";
+
+export interface CurrentLevelData {
+    meta:LevelData;
+    remainingFish:number;
+    currentTime:number;
+    score:number;
+}
 
 
 export class Game {
@@ -16,6 +23,8 @@ export class Game {
     private _scaling:number;
 
     private _lastGameTime:number;
+
+    private _currentLevel:CurrentLevelData;
 
     constructor(canvasDiv:HTMLCanvasElement) {
 
@@ -58,6 +67,10 @@ export class Game {
                     return;
                 });
 
+            //set the current screen
+            //game test, load desired level patch -- if autoloading to game screen
+            this.changeCurrentLevel(DataManager.getLevelDataByIndex(1));
+
             Logging.success("Level Data Loaded Successfully!");
 
             //setup createjs.Sprites
@@ -69,15 +82,9 @@ export class Game {
             ScreenManager.registerScreen("game", new GameScreen(this));
             ScreenManager.registerScreen("end", new EndScreen());
             ScreenManager.registerScreen("intermediary", new IntermediaryScreen(this));
-
             
 
-            
-            //set the current screen
-            //game test, load desired level patch -- if autoloading to game screen
-            (ScreenManager.getScreenByKey("game") as GameScreen).LevelData = DataManager.getLevelDataByIndex(1);
-
-            ScreenManager.setCurrentScreen("game", this._stage);
+            ScreenManager.setCurrentScreen("menu", this._stage);
 
             //setup the game loop
             createjs.Ticker.framerate = Game.FRAME_RATE;
@@ -89,6 +96,14 @@ export class Game {
 
 
     /*--------------- METHODS ------------------------*/
+    public changeCurrentLevel(levelData:LevelData) {
+        this._currentLevel = {
+            meta : levelData,
+            currentTime : 0,
+            remainingFish : levelData.data.length,
+            score : 0
+        };
+    }
     /*--------------- ABSTRACTS ----------------------*/
     /*--------------- EVENTS -------------------------*/
     public update(e:any) {
@@ -113,6 +128,8 @@ export class Game {
 
     public get Stage() { return this._stage; }
     public get Scaling() { return this._scaling; }
+
+    public get CurrentLevelData() { return this._currentLevel; }
 
 
 

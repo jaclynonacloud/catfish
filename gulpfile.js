@@ -39,6 +39,12 @@ function bundle() {
         .pipe(gulp.dest('public/js'));
 }
 
-gulp.task("default", gulp.series(gulp.parallel('copy-html'), bundle));
-watchedBrowserify.on("update", bundle);
-watchedBrowserify.on("log", fancy_log);
+// gulp.task("default", gulp.series(gulp.parallel('copy-html'), bundle));
+// gulp.task("default", gulp.watch('src/**/*.ts', gulp.series(gulp.parallel('copy-html'), bundle)));
+// watchedBrowserify.on("update", bundle);
+// watchedBrowserify.on("log", fancy_log);
+
+
+exports.watch = () => {
+    gulp.watch('src/**/*.ts', gulp.series(gulp.parallel('copy-html'), bundle))
+}

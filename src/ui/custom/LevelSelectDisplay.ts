@@ -133,7 +133,8 @@ export class LevelSelectDisplay implements IEnableable {
 
         //set the level index
         const data = DataManager.getLevelDataByIndex(index);
-        (ScreenManager.getScreenByKey("game") as GameScreen).LevelData = data;
+        console.log("MY LEVEL DATA", data);
+        this._game.changeCurrentLevel(data);
         //go to intermediary screen
         const intermediary = ScreenManager.getScreenByKey("intermediary") as IntermediaryScreen;
         new Promise(async(res) => {

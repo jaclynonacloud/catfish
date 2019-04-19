@@ -40,29 +40,64 @@ export class Layout {
         
 
         if(this._direction == Layout.VERTICAL) {
-            // X - CENTER
             let totalHeight = 0;
-            if(this._alignment == Layout.CENTER) {
-                for(let i = 0; i < items.length; i++) {
-                    const item:createjs.DisplayObject = items[i];
-                    item.x = (Game.WIDTH / 2) - (item.getBounds().width / 2);
-                    item.y = totalHeight;
-                    totalHeight += item.getBounds().height + this._spacing;
-                    if(addToParent) this._parent.addChild(item);
+            //ALIGNMENT
+            switch(this._alignment) {
+                case Layout.START : {
+                    for(let i = 0; i < items.length; i++) {
+                        const item:createjs.DisplayObject = items[i];
+                        item.x = 0;
+                        item.y = totalHeight;
+                        totalHeight += item.getBounds().height + this._spacing;
+                        if(addToParent) this._parent.addChild(item);
+                    }
+                    break;
                 }
+                case Layout.CENTER : {
+                    for(let i = 0; i < items.length; i++) {
+                        const item:createjs.DisplayObject = items[i];
+                        item.x = (Game.WIDTH / 2) - (item.getBounds().width / 2);
+                        item.y = totalHeight;
+                        totalHeight += item.getBounds().height + this._spacing;
+                        if(addToParent) this._parent.addChild(item);
+                    }
+                    break;
+                }
+                case Layout.END : {
+                    for(let i = 0; i < items.length; i++) {
+                        const item:createjs.DisplayObject = items[i];
+                        item.x = Game.WIDTH - item.getBounds().width;
+                        item.y = totalHeight;
+                        totalHeight += item.getBounds().height + this._spacing;
+                        if(addToParent) this._parent.addChild(item);
+                    }
+                    break;
+                }
+            }
 
-                // Y - CENTER
-                //handle vertical alignment
-                if(this._crossAlignment == Layout.START) {
-                    // DO NOTHING, this is the default
+            //CROSS ALIGNMENT
+            //handle vertical alignment
+            switch(this._crossAlignment) {
+                case Layout.START : {
+                    break;
                 }
-                else if(this._crossAlignment == Layout.CENTER) {
+                case Layout.CENTER : {
                     totalHeight += items[items.length-1].getBounds().height;
                     for(let i = 0; i < items.length; i++) {
                         const item:createjs.DisplayObject = items[i];
                         //decipher desired center
                         item.y += (Game.HEIGHT / 2) - (totalHeight / 2);
                     }
+                    break;
+                }
+                case Layout.END :  {
+                    totalHeight += items[items.length-1].getBounds().height;
+                    for(let i = 0; i < items.length; i++) {
+                        const item:createjs.DisplayObject = items[i];
+                        //decipher desired center
+                        item.y += Game.HEIGHT - totalHeight;
+                    }
+                    break;
                 }
             }
         }
@@ -77,5 +112,6 @@ export class Layout {
     
     /*--------------- HELPER FUNCTIONS ---------------*/
     public static MAKE_VERTICAL_CENTER(container:createjs.Container) { return new Layout(container, Layout.VERTICAL, Layout.CENTER, Layout.CENTER, 5); }
+    public static MAKE_VERTICAL_START(container:createjs.Container) { return new Layout(container, Layout.VERTICAL, Layout.CENTER, Layout.START, 5); }
 
 }

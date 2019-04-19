@@ -9,10 +9,10 @@ import { Sprites } from "../ui/Sprites";
 import { Logging } from "../Functions";
 import { LevelData } from "../managers/DataManager";
 import { LoadManager } from "../managers/LoadManager";
+import { GameScore } from "../ui/partials/GameScore";
 
 export class GameScreen extends Screen {
     private _game:Game;
-    private _levelData:LevelData;
 
     //create containers
     private _staticContainer:Container;
@@ -22,17 +22,16 @@ export class GameScreen extends Screen {
     private _winBanner:createjs.Shape;
     private _winText:createjs.BitmapText;
 
+    private _gameScore:GameScore;
+
     private _cat:Cat;
     private _fishes:Fish[];
-    
-    private _remainingFish:number;
     
     constructor(game:Game) {
         super();
         this._game = game;
         this._fishes = [];
-        this._remainingFish = -1;
-        this._levelData = null;
+        this._game.CurrentLevelData.remainingFish = -1;
 
         //create object pool
         ObjectPool.createPoolObject(new Cat(this), POOL.CAT)
@@ -56,6 +55,8 @@ export class GameScreen extends Screen {
         this._fishContainer = new createjs.Container();
 
         this._winContainer = new createjs.Container();
+
+        this._gameScore = new GameScore(this._game);
     }
 
     /*--------------- METHODS ------------------------*/
@@ -88,10 +89,10 @@ export class GameScreen extends Screen {
 
         //decrement fish counter -- make sure we didn't make an error
         if(killedFish != null) {
-            this._remainingFish--;
+            this._game.CurrentLevelData.remainingFish--;
 
             //if all our fish are gone, end the game!
-            if(this._remainingFish <= 0) {
+            if(this._game.CurrentLevelData.remainingFish <= 0) {
                 //win game!
                 Logging.success("GAME IS OVER!");
                 this.win();
@@ -144,10 +145,10 @@ export class GameScreen extends Screen {
 
 
         //add level data if it exists
-        if(this._levelData != null) {
+        if(this._game.CurrentLevelData.meta != null) {
             //load in critters
-            for(let i = 0; i < this._levelData.data.length; i++) {
-                const data = this._levelData.data[i];
+            for(let i = 0; i < this._game.CurrentLevelData.meta.data.length; i++) {
+                const data = this._game.CurrentLevelData.meta.data[i];
                 switch(data.id) {
                     case POOL.FISH:
                         const fish = (ObjectPool.checkout(POOL.FISH) as Fish);
@@ -163,8 +164,21 @@ export class GameScreen extends Screen {
             }
 
             //set fish total
-            this._remainingFish = this._fishes.length;
+            this._game.CurrentLevelData.remainingFish = this._fishes.length;
         }
+
+
+        //add the score
+        this._gameScore.Container.y = this._game.StageHeight - 40;
+        this._container.addChild(this._gameScore.Container);
+
+        //update the game HUD for this round
+        const levelData = this._game.CurrentLevelData.meta;
+        console.log(this._game.CurrentLevelData);
+        const showScore = (levelData.showScore != null && !levelData.showScore) ? false : true;
+        const showTimer = (levelData.duration != null);
+        const showFishRemain = (levelData.showRemainingFish != null && !levelData.showRemainingFish) ? false : true;
+        this._gameScore.startHUD(showScore, showFishRemain, showTimer);
 
         return null;
     }
@@ -189,6 +203,9 @@ export class GameScreen extends Screen {
 
         this._cat.update(normalizedTime);
 
+        //update the score
+        this._gameScore.update(gameTime);
+
         super.update(gameTime);
     }
 
@@ -201,8 +218,6 @@ export class GameScreen extends Screen {
     }
     /*--------------- GETTERS & SETTERS --------------*/
     public get Game() { return this._game; }
-
-    public set LevelData(data:LevelData) { this._levelData = data; }
 }
 
 

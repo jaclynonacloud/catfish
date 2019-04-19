@@ -27,6 +27,10 @@
         "src":"./assets/spritesheets/menu_level_select.js",
         "id":"Menu_Level_Select"
     },
+    {
+        "src":"./assets/spritesheets/scorehud.js",
+        "id":"ScoreHUD_Spritesheet"
+    },
 
 
     {

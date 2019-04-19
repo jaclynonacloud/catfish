@@ -126,22 +126,22 @@ var Game = function () {
                                 });
 
                             case 12:
+                                //set the current screen
+                                //game test, load desired level patch -- if autoloading to game screen
+                                this.changeCurrentLevel(DataManager_1.DataManager.getLevelDataByIndex(1));
                                 Functions_1.Logging.success("Level Data Loaded Successfully!");
                                 //setup createjs.Sprites
-                                _context.next = 15;
+                                _context.next = 16;
                                 return Sprites_1.Sprites.setup();
 
-                            case 15:
+                            case 16:
                                 //build the screens
                                 ScreenManager_1.ScreenManager.registerScreen("splash", new SplashScreen_1.SplashScreen());
                                 ScreenManager_1.ScreenManager.registerScreen("menu", new MenuScreen_1.MenuScreen(this));
                                 ScreenManager_1.ScreenManager.registerScreen("game", new GameScreen_1.GameScreen(this));
                                 ScreenManager_1.ScreenManager.registerScreen("end", new EndScreen_1.EndScreen());
                                 ScreenManager_1.ScreenManager.registerScreen("intermediary", new IntermediaryScreen_1.IntermediaryScreen(this));
-                                //set the current screen
-                                //game test, load desired level patch -- if autoloading to game screen
-                                ScreenManager_1.ScreenManager.getScreenByKey("game").LevelData = DataManager_1.DataManager.getLevelDataByIndex(1);
-                                ScreenManager_1.ScreenManager.setCurrentScreen("game", this._stage);
+                                ScreenManager_1.ScreenManager.setCurrentScreen("menu", this._stage);
                                 //setup the game loop
                                 createjs.Ticker.framerate = Game.FRAME_RATE;
                                 createjs.Ticker.on("tick", this.update, this);
@@ -156,11 +156,22 @@ var Game = function () {
         });
     }
     /*--------------- METHODS ------------------------*/
-    /*--------------- ABSTRACTS ----------------------*/
-    /*--------------- EVENTS -------------------------*/
 
 
     _createClass(Game, [{
+        key: "changeCurrentLevel",
+        value: function changeCurrentLevel(levelData) {
+            this._currentLevel = {
+                meta: levelData,
+                currentTime: 0,
+                remainingFish: levelData.data.length,
+                score: 0
+            };
+        }
+        /*--------------- ABSTRACTS ----------------------*/
+        /*--------------- EVENTS -------------------------*/
+
+    }, {
         key: "update",
         value: function update(e) {
             var gameTime = this._lastGameTime != -1 ? createjs.Ticker.getMeasuredFPS() - this._lastGameTime : 1;
@@ -193,6 +204,11 @@ var Game = function () {
         key: "Scaling",
         get: function get() {
             return this._scaling;
+        }
+    }, {
+        key: "CurrentLevelData",
+        get: function get() {
+            return this._currentLevel;
         }
     }], [{
         key: "FRAME_RATE",
@@ -1123,21 +1139,9 @@ exports.LoadManager = LoadManager;
 },{}],10:[function(require,module,exports){
 "use strict";
 
-var _createClass = function () {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-        }
-    }return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-    };
-}();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -1212,6 +1216,7 @@ var ScreenManager = function () {
                                     //fade out
                                     createjs.Tween.get(ScreenManager._currentScreen.Container).to({ alpha: 0 }, 500, createjs.Ease.linear).call(function () {
                                         ScreenManager._currentScreen.destroy();
+                                        ScreenManager._currentScreen.disable();
                                         res();
                                     });
 
@@ -1226,7 +1231,6 @@ var ScreenManager = function () {
             //wait for certain actions to finish
             return new Promise(function (res) {
                 return __awaiter(_this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-                    var lastScreen;
                     return regeneratorRuntime.wrap(function _callee2$(_context2) {
                         while (1) {
                             switch (_context2.prev = _context2.next) {
@@ -1236,8 +1240,6 @@ var ScreenManager = function () {
 
                                 case 2:
                                     //now add in the new one
-                                    lastScreen = Screen_1.Screen._cur;
-
                                     ScreenManager._currentScreen = tempScreen;
                                     ScreenManager._currentScreen.create(stage);
                                     ScreenManager._currentScreen.Container.alpha = 0;
@@ -1250,7 +1252,7 @@ var ScreenManager = function () {
                                         res();
                                     });
 
-                                case 9:
+                                case 8:
                                 case "end":
                                     return _context2.stop();
                             }
@@ -1377,6 +1379,7 @@ var Container_1 = require("../ui/display/Container");
 var Sprites_1 = require("../ui/Sprites");
 var Functions_1 = require("../Functions");
 var LoadManager_1 = require("../managers/LoadManager");
+var GameScore_1 = require("../ui/partials/GameScore");
 
 var GameScreen = function (_Screen_1$Screen) {
     _inherits(GameScreen, _Screen_1$Screen);
@@ -1388,8 +1391,7 @@ var GameScreen = function (_Screen_1$Screen) {
 
         _this._game = game;
         _this._fishes = [];
-        _this._remainingFish = -1;
-        _this._levelData = null;
+        _this._game.CurrentLevelData.remainingFish = -1;
         //create object pool
         ObjectPool_1.ObjectPool.createPoolObject(new Cat_1.Cat(_this), POOL.CAT);
         for (var i = 0; i < 120; i++) {
@@ -1407,6 +1409,7 @@ var GameScreen = function (_Screen_1$Screen) {
         });
         _this._fishContainer = new createjs.Container();
         _this._winContainer = new createjs.Container();
+        _this._gameScore = new GameScore_1.GameScore(_this._game);
         return _this;
     }
     /*--------------- METHODS ------------------------*/
@@ -1438,9 +1441,9 @@ var GameScreen = function (_Screen_1$Screen) {
             var killedFish = fish.destroy();
             //decrement fish counter -- make sure we didn't make an error
             if (killedFish != null) {
-                this._remainingFish--;
+                this._game.CurrentLevelData.remainingFish--;
                 //if all our fish are gone, end the game!
-                if (this._remainingFish <= 0) {
+                if (this._game.CurrentLevelData.remainingFish <= 0) {
                     //win game!
                     Functions_1.Logging.success("GAME IS OVER!");
                     this.win();
@@ -1487,10 +1490,10 @@ var GameScreen = function (_Screen_1$Screen) {
             this._winContainer.mouseEnabled = false;
             this._cat.create(this._container);
             //add level data if it exists
-            if (this._levelData != null) {
+            if (this._game.CurrentLevelData.meta != null) {
                 //load in critters
-                for (var i = 0; i < this._levelData.data.length; i++) {
-                    var data = this._levelData.data[i];
+                for (var i = 0; i < this._game.CurrentLevelData.meta.data.length; i++) {
+                    var data = this._game.CurrentLevelData.meta.data[i];
                     switch (data.id) {
                         case POOL.FISH:
                             var fish = ObjectPool_1.ObjectPool.checkout(POOL.FISH);
@@ -1505,8 +1508,18 @@ var GameScreen = function (_Screen_1$Screen) {
                     }
                 }
                 //set fish total
-                this._remainingFish = this._fishes.length;
+                this._game.CurrentLevelData.remainingFish = this._fishes.length;
             }
+            //add the score
+            this._gameScore.Container.y = this._game.StageHeight - 40;
+            this._container.addChild(this._gameScore.Container);
+            //update the game HUD for this round
+            var levelData = this._game.CurrentLevelData.meta;
+            console.log(this._game.CurrentLevelData);
+            var showScore = levelData.showScore != null && !levelData.showScore ? false : true;
+            var showTimer = levelData.duration != null;
+            var showFishRemain = levelData.showRemainingFish != null && !levelData.showRemainingFish ? false : true;
+            this._gameScore.startHUD(showScore, showFishRemain, showTimer);
             return null;
         }
     }, {
@@ -1529,6 +1542,8 @@ var GameScreen = function (_Screen_1$Screen) {
                 fish.update(normalizedTime);
             });
             this._cat.update(normalizedTime);
+            //update the score
+            this._gameScore.update(gameTime);
             _get(GameScreen.prototype.__proto__ || Object.getPrototypeOf(GameScreen.prototype), "update", this).call(this, gameTime);
         }
     }, {
@@ -1547,11 +1562,6 @@ var GameScreen = function (_Screen_1$Screen) {
         key: "Game",
         get: function get() {
             return this._game;
-        }
-    }, {
-        key: "LevelData",
-        set: function set(data) {
-            this._levelData = data;
         }
     }]);
 
@@ -1587,294 +1597,18 @@ var POOL = function () {
 
 exports.POOL = POOL;
 
-},{"../Functions":1,"../ObjectPool":3,"../entities/Cat":4,"../entities/Fish":6,"../managers/LoadManager":9,"../managers/ScreenManager":10,"../ui/Sprites":17,"../ui/display/Container":19,"./Screen":15}],13:[function(require,module,exports){
+},{"../Functions":1,"../ObjectPool":3,"../entities/Cat":4,"../entities/Fish":6,"../managers/LoadManager":9,"../managers/ScreenManager":10,"../ui/Sprites":17,"../ui/display/Container":19,"../ui/partials/GameScore":21,"./Screen":15}],13:[function(require,module,exports){
 "use strict";
 
-var _typeof41 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _typeof40 = typeof Symbol === "function" && _typeof41(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof41(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof41(obj);
-};
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _typeof39 = typeof Symbol === "function" && _typeof40(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof40(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof40(obj);
-};
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _typeof38 = typeof Symbol === "function" && _typeof39(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof39(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof39(obj);
-};
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-var _typeof37 = typeof Symbol === "function" && _typeof38(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof38(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof38(obj);
-};
-
-var _typeof36 = typeof Symbol === "function" && _typeof37(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof37(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof37(obj);
-};
-
-var _typeof35 = typeof Symbol === "function" && _typeof36(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof36(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof36(obj);
-};
-
-var _typeof34 = typeof Symbol === "function" && _typeof35(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof35(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof35(obj);
-};
-
-var _typeof33 = typeof Symbol === "function" && _typeof34(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof34(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof34(obj);
-};
-
-var _typeof32 = typeof Symbol === "function" && _typeof33(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof33(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof33(obj);
-};
-
-var _typeof31 = typeof Symbol === "function" && _typeof32(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof32(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof32(obj);
-};
-
-var _typeof30 = typeof Symbol === "function" && _typeof31(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof31(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof31(obj);
-};
-
-var _typeof29 = typeof Symbol === "function" && _typeof30(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof30(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof30(obj);
-};
-
-var _typeof28 = typeof Symbol === "function" && _typeof29(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof29(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof29(obj);
-};
-
-var _typeof27 = typeof Symbol === "function" && _typeof28(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof28(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof28(obj);
-};
-
-var _typeof26 = typeof Symbol === "function" && _typeof27(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof27(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof27(obj);
-};
-
-var _typeof25 = typeof Symbol === "function" && _typeof26(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof26(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof26(obj);
-};
-
-var _typeof24 = typeof Symbol === "function" && _typeof25(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof25(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof25(obj);
-};
-
-var _typeof23 = typeof Symbol === "function" && _typeof24(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof24(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof24(obj);
-};
-
-var _typeof22 = typeof Symbol === "function" && _typeof23(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof23(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof23(obj);
-};
-
-var _typeof21 = typeof Symbol === "function" && _typeof22(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof22(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof22(obj);
-};
-
-var _typeof20 = typeof Symbol === "function" && _typeof21(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof21(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof21(obj);
-};
-
-var _typeof19 = typeof Symbol === "function" && _typeof20(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof20(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof20(obj);
-};
-
-var _typeof18 = typeof Symbol === "function" && _typeof19(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof19(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof19(obj);
-};
-
-var _typeof17 = typeof Symbol === "function" && _typeof18(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof18(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof18(obj);
-};
-
-var _typeof16 = typeof Symbol === "function" && _typeof17(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof17(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof17(obj);
-};
-
-var _typeof15 = typeof Symbol === "function" && _typeof16(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof16(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof16(obj);
-};
-
-var _typeof14 = typeof Symbol === "function" && _typeof15(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof15(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof15(obj);
-};
-
-var _typeof13 = typeof Symbol === "function" && _typeof14(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof14(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof14(obj);
-};
-
-var _typeof12 = typeof Symbol === "function" && _typeof13(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof13(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof13(obj);
-};
-
-var _typeof11 = typeof Symbol === "function" && _typeof12(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof12(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof12(obj);
-};
-
-var _typeof10 = typeof Symbol === "function" && _typeof11(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof11(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof11(obj);
-};
-
-var _typeof9 = typeof Symbol === "function" && _typeof10(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof10(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof10(obj);
-};
-
-var _typeof8 = typeof Symbol === "function" && _typeof9(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof9(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof9(obj);
-};
-
-var _typeof7 = typeof Symbol === "function" && _typeof8(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof8(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof8(obj);
-};
-
-var _typeof6 = typeof Symbol === "function" && _typeof7(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof7(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof7(obj);
-};
-
-var _typeof5 = typeof Symbol === "function" && _typeof6(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof6(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof6(obj);
-};
-
-var _typeof4 = typeof Symbol === "function" && _typeof5(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof5(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof5(obj);
-};
-
-var _typeof3 = typeof Symbol === "function" && _typeof4(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof4(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof4(obj);
-};
-
-var _typeof2 = typeof Symbol === "function" && _typeof3(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof3(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof3(obj);
-};
-
-var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-};
-
-var _createClass = function () {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-        }
-    }return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-    };
-}();
-
-var _get = function get(object, property, receiver) {
-    if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-        var parent = Object.getPrototypeOf(object);if (parent === null) {
-            return undefined;
-        } else {
-            return get(parent, property, receiver);
-        }
-    } else if ("value" in desc) {
-        return desc.value;
-    } else {
-        var getter = desc.get;if (getter === undefined) {
-            return undefined;
-        }return getter.call(receiver);
-    }
-};
-
-function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
-}
-
-function _possibleConstructorReturn(self, call) {
-    if (!self) {
-        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var Screen_1 = require("./Screen");
@@ -1896,6 +1630,7 @@ var IntermediaryScreen = function (_Screen_1$Screen) {
     }
     /*--------------- METHODS ------------------------*/
     /**Chooses the screen to load in after the intermediary. */
+
 
     _createClass(IntermediaryScreen, [{
         key: "queueNextScreen",
@@ -1985,183 +1720,15 @@ exports.IntermediaryScreen = IntermediaryScreen;
 },{"../managers/LoadManager":9,"../managers/ScreenManager":10,"../ui/Sprites":17,"./Screen":15}],14:[function(require,module,exports){
 "use strict";
 
-var _typeof23 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _typeof22 = typeof Symbol === "function" && _typeof23(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof23(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof23(obj);
-};
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-var _typeof21 = typeof Symbol === "function" && _typeof22(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof22(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof22(obj);
-};
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _typeof20 = typeof Symbol === "function" && _typeof21(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof21(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof21(obj);
-};
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-var _typeof19 = typeof Symbol === "function" && _typeof20(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof20(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof20(obj);
-};
-
-var _typeof18 = typeof Symbol === "function" && _typeof19(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof19(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof19(obj);
-};
-
-var _typeof17 = typeof Symbol === "function" && _typeof18(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof18(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof18(obj);
-};
-
-var _typeof16 = typeof Symbol === "function" && _typeof17(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof17(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof17(obj);
-};
-
-var _typeof15 = typeof Symbol === "function" && _typeof16(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof16(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof16(obj);
-};
-
-var _typeof14 = typeof Symbol === "function" && _typeof15(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof15(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof15(obj);
-};
-
-var _typeof13 = typeof Symbol === "function" && _typeof14(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof14(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof14(obj);
-};
-
-var _typeof12 = typeof Symbol === "function" && _typeof13(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof13(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof13(obj);
-};
-
-var _typeof11 = typeof Symbol === "function" && _typeof12(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof12(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof12(obj);
-};
-
-var _typeof10 = typeof Symbol === "function" && _typeof11(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof11(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof11(obj);
-};
-
-var _typeof9 = typeof Symbol === "function" && _typeof10(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof10(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof10(obj);
-};
-
-var _typeof8 = typeof Symbol === "function" && _typeof9(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof9(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof9(obj);
-};
-
-var _typeof7 = typeof Symbol === "function" && _typeof8(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof8(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof8(obj);
-};
-
-var _typeof6 = typeof Symbol === "function" && _typeof7(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof7(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof7(obj);
-};
-
-var _typeof5 = typeof Symbol === "function" && _typeof6(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof6(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof6(obj);
-};
-
-var _typeof4 = typeof Symbol === "function" && _typeof5(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof5(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof5(obj);
-};
-
-var _typeof3 = typeof Symbol === "function" && _typeof4(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof4(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof4(obj);
-};
-
-var _typeof2 = typeof Symbol === "function" && _typeof3(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof3(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof3(obj);
-};
-
-var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
-    return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-} : function (obj) {
-    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-};
-
-var _createClass = function () {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-        }
-    }return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-    };
-}();
-
-var _get = function get(object, property, receiver) {
-    if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-        var parent = Object.getPrototypeOf(object);if (parent === null) {
-            return undefined;
-        } else {
-            return get(parent, property, receiver);
-        }
-    } else if ("value" in desc) {
-        return desc.value;
-    } else {
-        var getter = desc.get;if (getter === undefined) {
-            return undefined;
-        }return getter.call(receiver);
-    }
-};
-
-function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
-}
-
-function _possibleConstructorReturn(self, call) {
-    if (!self) {
-        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-    }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-    if (typeof superClass !== "function" && superClass !== null) {
-        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -2235,18 +1802,6 @@ var MenuScreen = function (_Screen_1$Screen) {
         _this._clearedContainer.add("txtCleared", Sprites_1.Sprites.generateBitmapText("Data successfully cleared!", LoadManager_1.LoadManager.Spritesheets.Typography));
         _this._clearedContainer.Container.x -= _this._game.StageWidth;
         _this._clearedContainer.Container.y -= _this._game.StageHeight;
-        //setup level select container
-        // this._levelSelectContainer = new Container();
-        // this._levelSelectContainer.addMany({
-        //     txtOptions : Sprites.generateBitmapText("Level Select", LoadManager.Spritesheets.Typography),
-        //     // staticBG : Sprites.Backgrounds.LevelSelectBG,
-        //     // // levels : this._levelSelectLevelsContainer.Container
-        //     // level1 : Sprites.cloneSprite(Sprites.Buttons.LevelEmpty as Sprite),
-        //     // level2 : Sprites.cloneSprite(Sprites.Buttons.LevelEmpty as Sprite)
-        // });
-        // this._levelSelectDisplay = new LevelSelectDisplay();
-        // this._levelSelectContainer.add("levelSelect", this._levelSelectDisplay.Container);
-        // this._levelSelectContainer.Container.x += this._game.StageWidth;
         _this._levelSelectDisplay = new LevelSelectDisplay_1.LevelSelectDisplay(game);
         _this._levelSelectDisplay.Container.x += _this._game.StageWidth;
         //setup properties
@@ -2259,6 +1814,7 @@ var MenuScreen = function (_Screen_1$Screen) {
     /*--------------- ABSTRACTS ----------------------*/
     /*--------------- EVENTS -------------------------*/
 
+
     _createClass(MenuScreen, [{
         key: "_onNewGame",
         value: function _onNewGame() {
@@ -2266,7 +1822,6 @@ var MenuScreen = function (_Screen_1$Screen) {
 
             Functions_1.Logging.message("Go to new game!");
             var data = DataManager_1.DataManager.getLevelDataByIndex(0);
-            ScreenManager_1.ScreenManager.getScreenByKey("game").LevelData = data;
             var intermediary = ScreenManager_1.ScreenManager.getScreenByKey("intermediary");
             new Promise(function (res) {
                 return __awaiter(_this2, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -2376,6 +1931,7 @@ var MenuScreen = function (_Screen_1$Screen) {
     }, {
         key: "enable",
         value: function enable() {
+            console.log("LOAD IN MENU ACTIONS");
             _get(MenuScreen.prototype.__proto__ || Object.getPrototypeOf(MenuScreen.prototype), "enable", this).call(this);
             //listen to events
             this._mainContainer.Sprites.btnNewGame.on("click", this._onNewGame, this, true);
@@ -2405,6 +1961,7 @@ var MenuScreen = function (_Screen_1$Screen) {
             this._staticContainer.Sprites.bg.off("mousedown", this._onDragStart);
             this._staticContainer.Sprites.bg.off("click", this._onDragEnd);
             this._levelSelectDisplay.disable();
+            this.reset();
         }
     }, {
         key: "reset",
@@ -2424,21 +1981,9 @@ exports.MenuScreen = MenuScreen;
 },{"../Functions":1,"../managers/DataManager":8,"../managers/LoadManager":9,"../managers/ScreenManager":10,"../ui/Sprites":17,"../ui/custom/LevelSelectDisplay":18,"../ui/display/Container":19,"./Screen":15}],15:[function(require,module,exports){
 "use strict";
 
-var _createClass = function () {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-        }
-    }return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-    };
-}();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 Object.defineProperty(exports, "__esModule", { value: true });
 
@@ -2450,6 +1995,7 @@ var Screen = function () {
     }
     /*--------------- METHODS ------------------------*/
     /**Updates the screen. */
+
 
     _createClass(Screen, [{
         key: "update",
@@ -2593,6 +2139,13 @@ var Sprites = function () {
                 /* ------- ANIMATED ------- */
                 Sprites._backgrounds.Wave = new createjs.Sprite(LoadManager_1.LoadManager.Spritesheets.UI); // Animated BG
                 Sprites._backgrounds.Wave.gotoAndPlay("bg_main");
+                /* ------- GRAPHICS ------ */
+                Sprites._graphics.Timer = new createjs.Sprite(LoadManager_1.LoadManager.Spritesheets.ScoreHUD_Spritesheet);
+                Sprites._graphics.Timer.gotoAndPlay("sprTime");
+                Sprites._graphics.Score = new createjs.Sprite(LoadManager_1.LoadManager.Spritesheets.ScoreHUD_Spritesheet);
+                Sprites._graphics.Score.gotoAndPlay("sprScore");
+                Sprites._graphics.FishRemain = new createjs.Sprite(LoadManager_1.LoadManager.Spritesheets.ScoreHUD_Spritesheet);
+                Sprites._graphics.FishRemain.gotoAndPlay("sprFish");
                 /* ------- BUTTONS ------- */
                 Sprites._buttons.NewGame = new createjs.Sprite(LoadManager_1.LoadManager.Spritesheets.Entities); // New Game
                 Sprites._buttons.NewGame.gotoAndStop("btn_new_game");
@@ -2705,6 +2258,11 @@ var Sprites = function () {
         get: function get() {
             return Sprites._buttons;
         }
+    }, {
+        key: "Graphics",
+        get: function get() {
+            return Sprites._graphics;
+        }
     }]);
 
     return Sprites;
@@ -2713,15 +2271,28 @@ var Sprites = function () {
 Sprites.CLEAR_DATA = "onClearData";
 Sprites._backgrounds = {};
 Sprites._buttons = {};
+Sprites._graphics = {};
 Sprites._canClearData = false;
 exports.Sprites = Sprites;
 
 },{"../managers/LoadManager":9}],18:[function(require,module,exports){
 "use strict";
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
 
 var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -2814,7 +2385,6 @@ var LevelSelectDisplay = function () {
     }
     /*--------------- METHODS ------------------------*/
 
-
     _createClass(LevelSelectDisplay, [{
         key: "enable",
         value: function enable() {
@@ -2857,7 +2427,8 @@ var LevelSelectDisplay = function () {
             if (index == -1) return;
             //set the level index
             var data = DataManager_1.DataManager.getLevelDataByIndex(index);
-            ScreenManager_1.ScreenManager.getScreenByKey("game").LevelData = data;
+            console.log("MY LEVEL DATA", data);
+            this._game.changeCurrentLevel(data);
             //go to intermediary screen
             var intermediary = ScreenManager_1.ScreenManager.getScreenByKey("intermediary");
             new Promise(function (res) {
@@ -2936,31 +2507,11 @@ exports.LevelSelectDisplay = LevelSelectDisplay;
 },{"../../managers/DataManager":8,"../../managers/LoadManager":9,"../../managers/ScreenManager":10,"../Sprites":17}],19:[function(require,module,exports){
 "use strict";
 
-var _createClass = function () {
-    function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-        }
-    }return function (Constructor, protoProps, staticProps) {
-        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-    };
-}();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _toConsumableArray(arr) {
-    if (Array.isArray(arr)) {
-        for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
-            arr2[i] = arr[i];
-        }return arr2;
-    } else {
-        return Array.from(arr);
-    }
-}
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
-function _classCallCheck(instance, Constructor) {
-    if (!(instance instanceof Constructor)) {
-        throw new TypeError("Cannot call a class as a function");
-    }
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var Layout_1 = require("./Layout");
@@ -2968,13 +2519,16 @@ var Layout_1 = require("./Layout");
 
 var Container = function () {
     function Container() {
+        var layout = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
         _classCallCheck(this, Container);
 
         this._sprites = {};
         this._container = new createjs.Container();
-        this._layout = Layout_1.Layout.MAKE_VERTICAL_CENTER(this._container);
+        this._layout = layout != null ? new Layout_1.Layout(this._container, layout.direction, layout.alignment, layout.crossAlignment, layout.spacing) : Layout_1.Layout.MAKE_VERTICAL_CENTER(this._container);
     }
     /*--------------- METHODS ------------------------*/
+
 
     _createClass(Container, [{
         key: "add",
@@ -3036,6 +2590,25 @@ var Container = function () {
         get: function get() {
             return this._sprites;
         }
+    }], [{
+        key: "LAYOUT_OPTIONS",
+        get: function get() {
+            return {
+                //column layouts
+                //-- left aligned
+                "ColumnLeftTop": { direction: Layout_1.Layout.VERTICAL, alignment: Layout_1.Layout.START, crossAlignment: Layout_1.Layout.START, spacing: 5 },
+                "ColumnLeftCenter": { direction: Layout_1.Layout.VERTICAL, alignment: Layout_1.Layout.START, crossAlignment: Layout_1.Layout.CENTER, spacing: 5 },
+                "ColumnLeftBottom": { direction: Layout_1.Layout.VERTICAL, alignment: Layout_1.Layout.START, crossAlignment: Layout_1.Layout.END, spacing: 5 },
+                //-- center aligned
+                "ColumnCenterTop": { direction: Layout_1.Layout.VERTICAL, alignment: Layout_1.Layout.CENTER, crossAlignment: Layout_1.Layout.START, spacing: 5 },
+                "ColumnCenterCenter": { direction: Layout_1.Layout.VERTICAL, alignment: Layout_1.Layout.CENTER, crossAlignment: Layout_1.Layout.CENTER, spacing: 5 },
+                "ColumnCenterBottom": { direction: Layout_1.Layout.VERTICAL, alignment: Layout_1.Layout.CENTER, crossAlignment: Layout_1.Layout.END, spacing: 5 },
+                //-- right aligned
+                "ColumnRightTop": { direction: Layout_1.Layout.VERTICAL, alignment: Layout_1.Layout.END, crossAlignment: Layout_1.Layout.START, spacing: 5 },
+                "ColumnRightCenter": { direction: Layout_1.Layout.VERTICAL, alignment: Layout_1.Layout.END, crossAlignment: Layout_1.Layout.CENTER, spacing: 5 },
+                "ColumnRightBottom": { direction: Layout_1.Layout.VERTICAL, alignment: Layout_1.Layout.END, crossAlignment: Layout_1.Layout.END, spacing: 5 }
+            };
+        }
     }]);
 
     return Container;
@@ -3085,28 +2658,70 @@ var Layout = function () {
                 this._parent.removeAllChildren();
             }
             if (this._direction == Layout.VERTICAL) {
-                // X - CENTER
                 var totalHeight = 0;
-                if (this._alignment == Layout.CENTER) {
-                    for (var i = 0; i < items.length; i++) {
-                        var item = items[i];
-                        item.x = Game_1.Game.WIDTH / 2 - item.getBounds().width / 2;
-                        item.y = totalHeight;
-                        totalHeight += item.getBounds().height + this._spacing;
-                        if (addToParent) this._parent.addChild(item);
-                    }
-                    // Y - CENTER
-                    //handle vertical alignment
-                    if (this._crossAlignment == Layout.START) {
-                        // DO NOTHING, this is the default
-                    } else if (this._crossAlignment == Layout.CENTER) {
-                        totalHeight += items[items.length - 1].getBounds().height;
-                        for (var _i = 0; _i < items.length; _i++) {
-                            var _item = items[_i];
-                            //decipher desired center
-                            _item.y += Game_1.Game.HEIGHT / 2 - totalHeight / 2;
+                //ALIGNMENT
+                switch (this._alignment) {
+                    case Layout.START:
+                        {
+                            for (var i = 0; i < items.length; i++) {
+                                var item = items[i];
+                                item.x = 0;
+                                item.y = totalHeight;
+                                totalHeight += item.getBounds().height + this._spacing;
+                                if (addToParent) this._parent.addChild(item);
+                            }
+                            break;
                         }
-                    }
+                    case Layout.CENTER:
+                        {
+                            for (var _i = 0; _i < items.length; _i++) {
+                                var _item = items[_i];
+                                _item.x = Game_1.Game.WIDTH / 2 - _item.getBounds().width / 2;
+                                _item.y = totalHeight;
+                                totalHeight += _item.getBounds().height + this._spacing;
+                                if (addToParent) this._parent.addChild(_item);
+                            }
+                            break;
+                        }
+                    case Layout.END:
+                        {
+                            for (var _i2 = 0; _i2 < items.length; _i2++) {
+                                var _item2 = items[_i2];
+                                _item2.x = Game_1.Game.WIDTH - _item2.getBounds().width;
+                                _item2.y = totalHeight;
+                                totalHeight += _item2.getBounds().height + this._spacing;
+                                if (addToParent) this._parent.addChild(_item2);
+                            }
+                            break;
+                        }
+                }
+                //CROSS ALIGNMENT
+                //handle vertical alignment
+                switch (this._crossAlignment) {
+                    case Layout.START:
+                        {
+                            break;
+                        }
+                    case Layout.CENTER:
+                        {
+                            totalHeight += items[items.length - 1].getBounds().height;
+                            for (var _i3 = 0; _i3 < items.length; _i3++) {
+                                var _item3 = items[_i3];
+                                //decipher desired center
+                                _item3.y += Game_1.Game.HEIGHT / 2 - totalHeight / 2;
+                            }
+                            break;
+                        }
+                    case Layout.END:
+                        {
+                            totalHeight += items[items.length - 1].getBounds().height;
+                            for (var _i4 = 0; _i4 < items.length; _i4++) {
+                                var _item4 = items[_i4];
+                                //decipher desired center
+                                _item4.y += Game_1.Game.HEIGHT - totalHeight;
+                            }
+                            break;
+                        }
                 }
             } else {}
         }
@@ -3120,6 +2735,11 @@ var Layout = function () {
         key: "MAKE_VERTICAL_CENTER",
         value: function MAKE_VERTICAL_CENTER(container) {
             return new Layout(container, Layout.VERTICAL, Layout.CENTER, Layout.CENTER, 5);
+        }
+    }, {
+        key: "MAKE_VERTICAL_START",
+        value: function MAKE_VERTICAL_START(container) {
+            return new Layout(container, Layout.VERTICAL, Layout.CENTER, Layout.START, 5);
         }
     }]);
 
@@ -3136,6 +2756,119 @@ Layout.END = "end";
 Layout.CENTER = "center";
 exports.Layout = Layout;
 
-},{"../../Game":2}]},{},[7])
+},{"../../Game":2}],21:[function(require,module,exports){
+"use strict";
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Sprites_1 = require("../Sprites");
+var LoadManager_1 = require("../../managers/LoadManager");
+/**Creates a display container for the game screen. */
+
+var GameScore = function () {
+    function GameScore(game) {
+        _classCallCheck(this, GameScore);
+
+        //game conditions
+        this._useTimer = false;
+        this._useFishRemain = true;
+        this._useScore = true;
+        this._game = game;
+        //create the initial objects
+        this._container = new createjs.Container();
+        this._bg = new createjs.Shape();
+        this._bg.graphics.beginFill("#000000");
+        this._bg.graphics.drawRect(0, 0, this._game.StageWidth, 40);
+        this._bg.graphics.endFill();
+        this._bg.cache(0, 0, this._game.StageWidth, 40);
+        this._container.addChild(this._bg);
+        //create the container objects
+        //timer
+        this._timerContainer = new createjs.Container();
+        this._timerContainer.x += 10;
+        var timerSprite = Sprites_1.Sprites.Graphics.Timer.clone();
+        this._timerContainer.addChild(timerSprite);
+        this._timerTextContainer = new createjs.Container();
+        this._timerTextContainer.y += 8;
+        this._timerTextContainer.x += Sprites_1.Sprites.Graphics.Timer.getBounds().width + 10;
+        this._timerContainer.addChild(this._timerTextContainer);
+        this._container.addChild(this._timerContainer);
+        //fish remain
+        this._fishRemainContainer = new createjs.Container();
+        var fishRemainSprite = Sprites_1.Sprites.Graphics.FishRemain.clone();
+        this._fishRemainContainer.addChild(fishRemainSprite);
+        this._fishRemainTextContainer = new createjs.Container();
+        this._fishRemainTextContainer.y += 8;
+        this._fishRemainTextContainer.x += Sprites_1.Sprites.Graphics.FishRemain.getBounds().width + 10;
+        this._fishRemainContainer.addChild(this._fishRemainTextContainer);
+        this._container.addChild(this._fishRemainContainer);
+        //score
+        this._scoreContainer = new createjs.Container();
+        this._scoreContainer.x = this._game.StageWidth - Sprites_1.Sprites.Graphics.Score.getBounds().width - 40;
+        var scoreSprite = Sprites_1.Sprites.Graphics.Score.clone();
+        this._scoreContainer.addChild(scoreSprite);
+        this._scoreTextContainer = new createjs.Container();
+        this._scoreTextContainer.y += 8;
+        this._scoreTextContainer.x += Sprites_1.Sprites.Graphics.Score.getBounds().width + 10;
+        this._scoreContainer.addChild(this._scoreTextContainer);
+        this._container.addChild(this._scoreContainer);
+    }
+    /*--------------- METHODS ------------------------*/
+
+
+    _createClass(GameScore, [{
+        key: "startHUD",
+        value: function startHUD(showScore, showFishRemain, showTimer) {
+            this._useScore = showScore;
+            this._useFishRemain = showFishRemain;
+            this._useTimer = showTimer;
+            console.log("SHOW ME THE SCORE, REMAIN, TIMER", showScore, showFishRemain, showTimer);
+            if (this._useScore) this._container.addChild(this._scoreContainer);else this._container.removeChild(this._scoreContainer);
+            if (this._useFishRemain) this._container.addChild(this._fishRemainContainer);else this._container.removeChild(this._fishRemainContainer);
+            if (this._useTimer) this._container.addChild(this._timerContainer);else this._container.removeChild(this._timerContainer);
+        }
+        /*--------------- ABSTRACTS ----------------------*/
+        /*--------------- EVENTS -------------------------*/
+        /*--------------- OVERRIDES ----------------------*/
+
+    }, {
+        key: "update",
+        value: function update(gameTime) {
+            //get the game timer
+            var timer = gameTime;
+            this._timerTextContainer.removeAllChildren();
+            var timerCont = Sprites_1.Sprites.generateBitmapText(this._game.CurrentLevelData.currentTime.toString(), LoadManager_1.LoadManager.Spritesheets.ScoreHUD_Spritesheet);
+            this._timerTextContainer.addChild(timerCont);
+            //get the fish remain score
+            var fishRemain = gameTime;
+            this._fishRemainTextContainer.removeAllChildren();
+            var fishRemainCont = Sprites_1.Sprites.generateBitmapText(this._game.CurrentLevelData.remainingFish.toString(), LoadManager_1.LoadManager.Spritesheets.ScoreHUD_Spritesheet);
+            this._fishRemainTextContainer.addChild(fishRemainCont);
+            this._fishRemainContainer.x = this._game.StageWidth / 2 - this._fishRemainContainer.getBounds().width / 2;
+            //get the score
+            var score = gameTime;
+            this._scoreTextContainer.removeAllChildren();
+            var scoreCont = Sprites_1.Sprites.generateBitmapText(this._game.CurrentLevelData.score.toString(), LoadManager_1.LoadManager.Spritesheets.ScoreHUD_Spritesheet);
+            this._scoreTextContainer.addChild(scoreCont);
+            this._scoreContainer.x = this._game.StageWidth - this._scoreContainer.getBounds().width - 40;
+        }
+        /*--------------- GETTERS & SETTERS --------------*/
+
+    }, {
+        key: "Container",
+        get: function get() {
+            return this._container;
+        }
+    }]);
+
+    return GameScore;
+}();
+
+exports.GameScore = GameScore;
+
+},{"../../managers/LoadManager":9,"../Sprites":17}]},{},[7])
 
 //# sourceMappingURL=bundle.js.map

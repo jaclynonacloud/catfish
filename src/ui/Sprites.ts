@@ -7,6 +7,8 @@ export class Sprites {
     private static _backgrounds:{ [key:string]:createjs.DisplayObject } = { };
     private static _buttons:{ [key:string]:createjs.DisplayObject } = { };
 
+    private static _graphics:{ [key:string]:createjs.DisplayObject } = { };
+
     private static _spritesheets:createjs.SpriteSheet[];
 
     private static _canClearData:boolean = false;
@@ -30,6 +32,15 @@ export class Sprites {
             /* ------- ANIMATED ------- */
             Sprites._backgrounds.Wave = new createjs.Sprite(LoadManager.Spritesheets.UI); // Animated BG
             (Sprites._backgrounds.Wave as createjs.Sprite).gotoAndPlay("bg_main");
+
+
+            /* ------- GRAPHICS ------ */
+            Sprites._graphics.Timer = new createjs.Sprite(LoadManager.Spritesheets.ScoreHUD_Spritesheet);
+            (Sprites._graphics.Timer as createjs.Sprite).gotoAndPlay("sprTime");
+            Sprites._graphics.Score = new createjs.Sprite(LoadManager.Spritesheets.ScoreHUD_Spritesheet);
+            (Sprites._graphics.Score as createjs.Sprite).gotoAndPlay("sprScore");
+            Sprites._graphics.FishRemain = new createjs.Sprite(LoadManager.Spritesheets.ScoreHUD_Spritesheet);
+            (Sprites._graphics.FishRemain as createjs.Sprite).gotoAndPlay("sprFish");
             
             /* ------- BUTTONS ------- */
             Sprites._buttons.NewGame = new createjs.Sprite(LoadManager.Spritesheets.Entities); // New Game
@@ -131,6 +142,7 @@ export class Sprites {
     /*--------------- GETTERS & SETTERS --------------*/
     public static get Backgrounds() { return Sprites._backgrounds; }
     public static get Buttons() { return Sprites._buttons; }
+    public static get Graphics() { return Sprites._graphics; }
 
     // static get BG() { return Sprites._bg }
     // static get Logo() { return Sprites._logo }

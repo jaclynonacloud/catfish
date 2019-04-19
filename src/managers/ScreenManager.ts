@@ -42,6 +42,7 @@ export class ScreenManager {
                     .to({ alpha:0 }, 500, createjs.Ease.linear)
                     .call(() => {
                         ScreenManager._currentScreen.destroy();
+                        ScreenManager._currentScreen.disable();
                         res();
                     });
             })

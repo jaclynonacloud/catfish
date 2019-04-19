@@ -7,6 +7,9 @@ export interface WorldsData {
 export interface LevelData {
     name:string;
     data:any[];
+    duration?:number;
+    showScore?:boolean;
+    showRemainingFish?:boolean;
 }
 
 export class DataManager {

@@ -69,19 +69,6 @@ export class MenuScreen extends Screen {
         this._clearedContainer.Container.x -= this._game.StageWidth;
         this._clearedContainer.Container.y -= this._game.StageHeight;
 
-        //setup level select container
-        // this._levelSelectContainer = new Container();
-        // this._levelSelectContainer.addMany({
-        //     txtOptions : Sprites.generateBitmapText("Level Select", LoadManager.Spritesheets.Typography),
-        //     // staticBG : Sprites.Backgrounds.LevelSelectBG,
-        //     // // levels : this._levelSelectLevelsContainer.Container
-        //     // level1 : Sprites.cloneSprite(Sprites.Buttons.LevelEmpty as Sprite),
-        //     // level2 : Sprites.cloneSprite(Sprites.Buttons.LevelEmpty as Sprite)
-        // });
-        // this._levelSelectDisplay = new LevelSelectDisplay();
-        // this._levelSelectContainer.add("levelSelect", this._levelSelectDisplay.Container);
-        // this._levelSelectContainer.Container.x += this._game.StageWidth;
-
         this._levelSelectDisplay = new LevelSelectDisplay(game);
         this._levelSelectDisplay.Container.x += this._game.StageWidth;
 
@@ -100,7 +87,6 @@ export class MenuScreen extends Screen {
         Logging.message("Go to new game!");
         
         const data = DataManager.getLevelDataByIndex(0);
-        (ScreenManager.getScreenByKey("game") as GameScreen).LevelData = data;
         
         const intermediary = ScreenManager.getScreenByKey("intermediary") as IntermediaryScreen;
         new Promise(async(res) => {
@@ -187,6 +173,7 @@ export class MenuScreen extends Screen {
     }
 
     public enable() {
+        console.log("LOAD IN MENU ACTIONS");
         super.enable();
         //listen to events
         (this._mainContainer.Sprites.btnNewGame as any).on("click", this._onNewGame, this, true);

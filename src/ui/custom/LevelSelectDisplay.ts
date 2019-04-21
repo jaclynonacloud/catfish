@@ -172,7 +172,7 @@ export class LevelSelectDisplay implements IEnableable {
             return;
         }
         //create the text
-        const text = Sprites.generateBitmapText(value, LoadManager.Spritesheets.Typography);
+        const text = Sprites.generateBitmapText(value, LoadManager.Spritesheets.TypographyWhite);
         (text as any).scale = 0.6;
         //load into container
         this._levelTextContainer.removeAllChildren();

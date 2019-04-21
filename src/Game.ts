@@ -35,7 +35,7 @@ export class Game {
         this._lastGameTime = -1;
 
         //set the scaling
-        this._scaling = Game.HEIGHT / 1366;
+        this._scaling = Game.HEIGHT / 1024;
 
         //start loading game assets
         new Promise(async(res, rej) => {
@@ -45,6 +45,8 @@ export class Game {
             (this._stage as any).setClearColor("#000000");
             this._stage.enableMouseOver(10);
             this._stage.update();
+
+            // this._stage.scaleX = this._stage.scaleY = 0.8;
 
             console.log(this._stage, this._canvas);
 
@@ -80,11 +82,11 @@ export class Game {
             ScreenManager.registerScreen("splash", new SplashScreen());
             ScreenManager.registerScreen("menu", new MenuScreen(this));
             ScreenManager.registerScreen("game", new GameScreen(this));
-            ScreenManager.registerScreen("end", new EndScreen());
+            ScreenManager.registerScreen("end", new EndScreen(this));
             ScreenManager.registerScreen("intermediary", new IntermediaryScreen(this));
             
 
-            ScreenManager.setCurrentScreen("menu", this._stage);
+            ScreenManager.setCurrentScreen("end", this._stage);
 
             //setup the game loop
             createjs.Ticker.framerate = Game.FRAME_RATE;
@@ -120,8 +122,12 @@ export class Game {
     /*--------------- OVERRIDES ----------------------*/
     /*--------------- GETTERS & SETTERS --------------*/
     public static get FRAME_RATE() { return 30; }
-    public static get WIDTH() { return document.body.clientHeight * 0.48; } //desired size
-    public static get HEIGHT() { return document.body.clientHeight; }
+    // public static get WIDTH() { return 411; } //desired size
+    // public static get HEIGHT() { return 731; }
+    // public static get WIDTH() { return document.body.clientHeight * 0.56; } //desired size
+    // public static get HEIGHT() { return document.body.clientHeight; }
+    public static get WIDTH() { return Game.HEIGHT * 0.5625; } //desired size
+    public static get HEIGHT() { return Math.min(document.body.clientHeight, 1024); }
 
     public get StageWidth() { return this._canvas.width; } //actual size
     public get StageHeight() { return this._canvas.height; }

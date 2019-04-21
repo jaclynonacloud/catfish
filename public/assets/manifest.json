@@ -34,6 +34,16 @@
 
 
     {
+        "src":"./assets/spritesheets/Catfish_Main.js",
+        "id":"Catfish_Main"
+    },
+    {
+        "src":"./assets/spritesheets/Catfish_End.js",
+        "id":"Catfish_End"
+    },
+
+
+    {
         "src":"./assets/images/bg.png",
         "id":"BG"
     },

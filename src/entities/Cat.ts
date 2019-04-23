@@ -18,7 +18,8 @@ export class Cat extends Entity implements IEnableable {
     private _hasReachedSurface:boolean;
 
     constructor(gameScreen:GameScreen) {
-        super(gameScreen, LoadManager.Spritesheets.Cat_Spritesheet);
+        super(gameScreen, LoadManager.Spritesheets.Kitty_Spritesheet);
+        // super(gameScreen, LoadManager.Spritesheets.Cat_Spritesheet);
         this._speed = 3;
         this._fishCaughtMultiplier = 0.05;
 
@@ -201,13 +202,22 @@ export class Cat extends Entity implements IEnableable {
     public static get GRAB_RANGE() { return 120; }
     public static get ANIMATION() {
         return Object.freeze({
-            "Idle" : "cat_idle",
-            "Death" : "cat_death",
-            "Grab" : "cat_grab",
-            "Hold" : "cat_grab_hold",
-            "Ow" : "cat_ow"
+            "Idle" : "kittyIdle",
+            "Death" : "kittyIdle",
+            "Grab" : "kittyIdle",
+            "Hold" : "kittyIdle",
+            "Ow" : "kittyIdle"
         });
     }
+    // public static get ANIMATION() {
+    //     return Object.freeze({
+    //         "Idle" : "cat_idle",
+    //         "Death" : "cat_death",
+    //         "Grab" : "cat_grab",
+    //         "Hold" : "cat_grab_hold",
+    //         "Ow" : "cat_ow"
+    //     });
+    // }
     public get Speed() { 
         const caughtFishMult = ((this._caughtFish.length > 0) ? 1 + (this._caughtFish.length + this._fishCaughtMultiplier) : 1);
         console.log(caughtFishMult);

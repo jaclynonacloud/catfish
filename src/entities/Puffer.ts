@@ -5,19 +5,19 @@ import { IEnableable } from "../Interfaces";
 import { Logging } from "../Functions";
 import { GameScreen } from "../screens/GameScreen";
 
-export class Fish extends Entity implements IEnableable {
+export class Puffer extends Entity implements IEnableable {
     private _speed:number;
     private _naturalY:number;
 
     private _isCaught:boolean;
 
     constructor(gameScreen:GameScreen) {
-        super(gameScreen, LoadManager.Spritesheets.Peeper_Spritesheet);
+        super(gameScreen, LoadManager.Spritesheets.Fish_Spritesheet);
         this._speed = 1;
 
         this._isCaught = false;
 
-        this._sprite.gotoAndPlay(Fish.ANIMATION.Slow);
+        this._sprite.gotoAndPlay(Puffer.ANIMATION.Slow);
     }
 
     /*--------------- METHODS ------------------------*/
@@ -37,7 +37,7 @@ export class Fish extends Entity implements IEnableable {
         Logging.message("Fish was grabbed!");
         this._isCaught = true;
 
-        this._sprite.gotoAndPlay(Fish.ANIMATION.Panic);
+        this._sprite.gotoAndPlay(Puffer.ANIMATION.Panic);
     }
 
 
@@ -93,9 +93,9 @@ export class Fish extends Entity implements IEnableable {
     /*--------------- GETTERS & SETTERS --------------*/
     public static get ANIMATION() {
         return Object.freeze({
-            "Slow" : "fishIdle",
-            "Fast" : "fishIdle",
-            "Panic" : "fishPanic"
+            "Slow" : "fish_swim_slow",
+            "Fast" : "fish_swim_fast",
+            "Panic" : "fish_swim_panic"
         });
     }
     public get Speed() { return this._speed; }

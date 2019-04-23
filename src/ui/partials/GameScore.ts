@@ -89,25 +89,25 @@ export class GameScore {
     /*--------------- OVERRIDES ----------------------*/
     public update(gameTime:number) {
         
-        //get the game timer
-        let timer = gameTime;
-        this._timerTextContainer.removeAllChildren();
-        let timerCont = Sprites.generateBitmapText(this._game.CurrentLevelData.currentTime.toString(), LoadManager.Spritesheets.ScoreHUD_Spritesheet);
-        this._timerTextContainer.addChild(timerCont);
+        // //get the game timer
+        // let timer = gameTime;
+        // this._timerTextContainer.removeAllChildren();
+        // let timerCont = Sprites.generateBitmapText(this._game.CurrentLevelData.currentTime.toString(), LoadManager.Spritesheets.ScoreHUD_Spritesheet);
+        // this._timerTextContainer.addChild(timerCont);
 
-        //get the fish remain score
-        let fishRemain = gameTime;
-        this._fishRemainTextContainer.removeAllChildren();
-        let fishRemainCont = Sprites.generateBitmapText(this._game.CurrentLevelData.remainingFish.toString(), LoadManager.Spritesheets.ScoreHUD_Spritesheet);
-        this._fishRemainTextContainer.addChild(fishRemainCont);
-        this._fishRemainContainer.x = (this._game.StageWidth / 2) - (this._fishRemainContainer.getBounds().width / 2);
+        // //get the fish remain score
+        // let fishRemain = gameTime;
+        // this._fishRemainTextContainer.removeAllChildren();
+        // let fishRemainCont = Sprites.generateBitmapText(this._game.CurrentLevelData.remainingFish.toString(), LoadManager.Spritesheets.ScoreHUD_Spritesheet);
+        // this._fishRemainTextContainer.addChild(fishRemainCont);
+        // this._fishRemainContainer.x = (this._game.StageWidth / 2) - (this._fishRemainContainer.getBounds().width / 2);
 
-        //get the score
-        let score = gameTime;
-        this._scoreTextContainer.removeAllChildren();
-        let scoreCont = Sprites.generateBitmapText(this._game.CurrentLevelData.score.toString(), LoadManager.Spritesheets.ScoreHUD_Spritesheet);
-        this._scoreTextContainer.addChild(scoreCont);
-        this._scoreContainer.x = this._game.StageWidth - this._scoreContainer.getBounds().width - 40;
+        // //get the score
+        // let score = gameTime;
+        // this._scoreTextContainer.removeAllChildren();
+        // let scoreCont = Sprites.generateBitmapText(this._game.CurrentLevelData.score.toString(), LoadManager.Spritesheets.ScoreHUD_Spritesheet);
+        // this._scoreTextContainer.addChild(scoreCont);
+        // this._scoreContainer.x = this._game.StageWidth - this._scoreContainer.getBounds().width - 40;
     }
     /*--------------- GETTERS & SETTERS --------------*/
     public get Container() { return this._container; }

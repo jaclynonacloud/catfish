@@ -41,6 +41,18 @@
         "src":"./assets/spritesheets/Catfish_End.js",
         "id":"Catfish_End"
     },
+    {
+        "src":"./assets/spritesheets/Kitty_Spritesheet.js",
+        "id":"Kitty_Spritesheet"
+    },
+    {
+        "src":"./assets/spritesheets/Peeper_Spritesheet.js",
+        "id":"Peeper_Spritesheet"
+    },
+    {
+        "src":"./assets/spritesheets/BG_Spritesheet.js",
+        "id":"BG_Spritesheet"
+    },
 
 
     {

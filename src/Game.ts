@@ -9,11 +9,10 @@ import { Sprites } from "./ui/Sprites";
 import { IntermediaryScreen } from "./screens/IntermediaryScreen";
 import { DataManager, LevelData } from "./managers/DataManager";
 
-export interface CurrentLevelData {
-    meta:LevelData;
-    remainingFish:number;
-    currentTime:number;
-    score:number;
+export interface ICurrentScore {
+    totalFish: number;
+    time: number;
+    combos: number;
 }
 
 
@@ -24,7 +23,8 @@ export class Game {
 
     private _lastGameTime:number;
 
-    private _currentLevel:CurrentLevelData;
+    private _currentLevel:LevelData;
+    private _currentScore:ICurrentScore;
 
     constructor(canvasDiv:HTMLCanvasElement) {
 
@@ -86,7 +86,8 @@ export class Game {
             ScreenManager.registerScreen("intermediary", new IntermediaryScreen(this));
             
 
-            ScreenManager.setCurrentScreen("end", this._stage);
+            ScreenManager.setCurrentScreen("game", this._stage);
+            // ScreenManager.setCurrentScreen("end", this._stage);
 
             //setup the game loop
             createjs.Ticker.framerate = Game.FRAME_RATE;
@@ -99,12 +100,11 @@ export class Game {
 
     /*--------------- METHODS ------------------------*/
     public changeCurrentLevel(levelData:LevelData) {
-        this._currentLevel = {
-            meta : levelData,
-            currentTime : 0,
-            remainingFish : levelData.data.length,
-            score : 0
-        };
+        this._currentLevel = levelData;
+    }
+
+    public changeCurrentScore(currentScore:ICurrentScore) {
+        this._currentScore = currentScore;
     }
     /*--------------- ABSTRACTS ----------------------*/
     /*--------------- EVENTS -------------------------*/
@@ -122,10 +122,6 @@ export class Game {
     /*--------------- OVERRIDES ----------------------*/
     /*--------------- GETTERS & SETTERS --------------*/
     public static get FRAME_RATE() { return 30; }
-    // public static get WIDTH() { return 411; } //desired size
-    // public static get HEIGHT() { return 731; }
-    // public static get WIDTH() { return document.body.clientHeight * 0.56; } //desired size
-    // public static get HEIGHT() { return document.body.clientHeight; }
     public static get WIDTH() { return Game.HEIGHT * 0.5625; } //desired size
     public static get HEIGHT() { return Math.min(document.body.clientHeight, 1024); }
 
@@ -136,6 +132,7 @@ export class Game {
     public get Scaling() { return this._scaling; }
 
     public get CurrentLevelData() { return this._currentLevel; }
+    public get CurrentScoreData() { return this._currentScore; }
 
 
 

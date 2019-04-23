@@ -50,6 +50,10 @@
         "id":"Peeper_Spritesheet"
     },
     {
+        "src":"./assets/spritesheets/Puffer_Spritesheet.js",
+        "id":"Puffer_Spritesheet"
+    },
+    {
         "src":"./assets/spritesheets/BG_Spritesheet.js",
         "id":"BG_Spritesheet"
     },

@@ -42,6 +42,7 @@ export class Game {
             //create the stage
             console.log("Readying stage!");
             this._stage = new createjs.StageGL(this._canvas, { antialias: true });
+            // this._stage = new createjs.StageGL(this._canvas);
             (this._stage as any).setClearColor("#000000");
             this._stage.enableMouseOver(10);
             this._stage.update();
@@ -71,7 +72,7 @@ export class Game {
 
             //set the current screen
             //game test, load desired level patch -- if autoloading to game screen
-            this.changeCurrentLevel(DataManager.getLevelDataByIndex(1));
+            this.changeCurrentLevel(DataManager.getLevelDataByIndex(0));
 
             Logging.success("Level Data Loaded Successfully!");
 

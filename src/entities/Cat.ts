@@ -15,6 +15,7 @@ export class Cat extends Entity implements IEnableable {
 
     private _isGrabbing:boolean;
     private _isRising:boolean;
+    private _isInjured:boolean;
     private _hasReachedSurface:boolean;
 
     constructor(gameScreen:GameScreen) {
@@ -26,6 +27,7 @@ export class Cat extends Entity implements IEnableable {
         this._caughtFish = [];
         this._isGrabbing = false;
         this._isRising = false;
+        this._isInjured = false;
         this._hasReachedSurface = true;
 
         this._sprite.gotoAndPlay(Cat.ANIMATION.Idle);
@@ -75,6 +77,7 @@ export class Cat extends Entity implements IEnableable {
 
                 //try to grab a fish
                 const fishes = this.GameScreen.tryToGrabFishes(this.X , this.Y);
+
                 //see if a fish was grabbed
                 if(fishes.length > 0) this.caught(fishes);
                 else this.returnToSurface();
@@ -141,26 +144,32 @@ export class Cat extends Entity implements IEnableable {
     }
     public drop() {
         //release the fish
-        // this._caughtFish.dropped();
+        this._caughtFish.forEach(f => f.release());
         this._caughtFish = [];
-        //return quickly
-        this.returnToSurface();
     }
 
     /**Called when hit by an enemy. */
-    public injure(enemy) {
+    public injure() {
+        this._isInjured = true;
+        console.log("TAKING DAMAGE");
         //start hurt animation
         //end any current tweening
         createjs.Tween.removeTweens(this._sprite);
         this._sprite.gotoAndPlay(Cat.ANIMATION.Ow);
         this._catYTween = createjs.Tween.get(this._sprite)
-            .wait(30)
-            .to({y:20}, 1000, createjs.Ease.linear)
+            .wait(15)
+            .to({y:20}, 500, createjs.Ease.linear)
             .call(() => {
                 //once the surface has been reached, allow x movement again
                 this.reachSurface();
                 this._sprite.gotoAndPlay(Cat.ANIMATION.Idle);
             });
+    }
+
+    /**Called when the cat tickles an enemy. */
+    public hitEnemy() {
+        this.injure();
+        this.drop();
     }
 
     public reachSurface() {
@@ -172,7 +181,11 @@ export class Cat extends Entity implements IEnableable {
             this._caughtFish = [];
         }
 
+        //set flags
         this._hasReachedSurface = true;
+        this._isInjured = false;
+        this._isRising = false;
+        this._isGrabbing = false;
     }
     /*--------------- ABSTRACTS ----------------------*/
     /*--------------- EVENTS -------------------------*/
@@ -182,13 +195,26 @@ export class Cat extends Entity implements IEnableable {
 
 
         //if we are rising, attempt to catch more fish
-        if(this._isRising) {
+        if(this._isRising && !this._isInjured) {
             console.log("TRY TO GRAB");
             //try to grab a fish
             const fishes = this.GameScreen.tryToGrabFishes(this.X , this.Y);
             //see if a fish was grabbed
             if(fishes.length > 0)
                 this.caught(fishes);
+        }
+
+        //test puffer damage
+        if(this._isRising || this._isGrabbing) {
+            //don't test again if injured
+            if(!this._isInjured) {
+                //test for puffer hit
+                const hasHitPuffer = this.GameScreen.hasHitAPuffer(this.X, this.Y);
+                if(hasHitPuffer) {
+                    this.hitEnemy();
+                    return;
+                }
+            }
         }
 
         //drag fish with us if we have any

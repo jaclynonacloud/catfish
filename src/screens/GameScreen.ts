@@ -2,6 +2,7 @@ import { Screen } from "./Screen";
 import { ScreenManager } from "../managers/ScreenManager";
 import { ObjectPool } from "../ObjectPool";
 import { Fish } from "../entities/Fish";
+import { Puffer } from "../entities/Puffer";
 import { Cat } from "../entities/Cat";
 import { Game } from "../Game";
 import { Container } from "../ui/display/Container";
@@ -17,6 +18,7 @@ export class GameScreen extends Screen {
     //create containers
     private _staticContainer:Container;
     private _fishContainer:createjs.Container;
+    private _pufferContainer:createjs.Container;
 
     private _winContainer:createjs.Container;
     private _winBanner:createjs.Shape;
@@ -26,6 +28,7 @@ export class GameScreen extends Screen {
 
     private _cat:Cat;
     private _fishes:Fish[];
+    private _puffers:Puffer[];
 
     private _remainingFish:number;
     
@@ -33,6 +36,7 @@ export class GameScreen extends Screen {
         super();
         this._game = game;
         this._fishes = [];
+        this._puffers = [];
         this._remainingFish = -1;
 
         //create object pool
@@ -40,9 +44,9 @@ export class GameScreen extends Screen {
         for(let i = 0; i < 120; i++) {
             ObjectPool.createPoolObject(new Fish(this), POOL.FISH);
         }
-        // for(let i = 0; i < 30; i++) {
-        //     ObjectPool.createPoolObject(new Puffer(this._game), POOL.PUFFERFISH)
-        // }
+        for(let i = 0; i < 30; i++) {
+            ObjectPool.createPoolObject(new Puffer(this), POOL.PUFFERFISH)
+        }
 
 
         //pool out static kitty
@@ -55,6 +59,7 @@ export class GameScreen extends Screen {
         });
 
         this._fishContainer = new createjs.Container();
+        this._pufferContainer = new createjs.Container();
 
         this._winContainer = new createjs.Container();
 
@@ -67,20 +72,34 @@ export class GameScreen extends Screen {
     public tryToGrabFishes(x:number, y:number):Fish[] {
         let fishes = [];
 
-        //see if any fish is grabbable at these coords and return if so
-        //for each fish, test the distance and return if close
+
+        const hitObjects = this._container.getObjectsUnderPoint(x, y, 0);
         for(let i = 0; i < this._fishes.length; i++) {
             const fish = this._fishes[i];
-
-            const localPos = fish.Sprite.globalToLocal(x, y);
-            const hitFish = fish.testHit(localPos.x, localPos.y);
-
-            if(hitFish) {
+            if(hitObjects.indexOf(fish.Sprite) != -1) {
                 fishes.push(fish);
             }
         }
-        //if no fish was caught, return null
+
         return fishes;
+
+    }
+
+    /**Tests to see if we hit a puffer. */
+    public hasHitAPuffer(x:number, y:number):Boolean {
+        // console.log("TESTING PUFF");
+
+        let hasHitPuffer = false;
+        const hitObjects = this._container.getObjectsUnderPoint(x, y, 0);
+        for(let i = 0; i < this._puffers.length; i++) {
+            if(hitObjects.indexOf(this._puffers[i].Sprite) != -1) {
+                console.log ("I HIT A PUFF");
+                this._puffers[i].puff();
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public collectFish(fish:Fish) {
@@ -92,6 +111,7 @@ export class GameScreen extends Screen {
         //decrement fish counter -- make sure we didn't make an error
         if(killedFish != null) {
             this._remainingFish--;
+            this._fishes.splice(this._fishes.indexOf(killedFish as Fish), 1);
 
             //if all our fish are gone, end the game!
             if(this._remainingFish <= 0) {
@@ -122,6 +142,9 @@ export class GameScreen extends Screen {
                 //transition to end screen
                 ScreenManager.setCurrentScreen("end", this._game.Stage);
                 // ScreenManager.setCurrentScreen("menu", this._game.Stage);
+
+                //reset game data
+                this.reset();
             });
     }
 
@@ -136,6 +159,7 @@ export class GameScreen extends Screen {
         this._container.addChild(this._staticContainer.Container);
 
         this._container.addChild(this._fishContainer);
+        this._container.addChild(this._pufferContainer);
 
         //add conditional text
         this._winBanner = new createjs.Shape();
@@ -155,6 +179,16 @@ export class GameScreen extends Screen {
         this._cat.create(this._container);
 
 
+        //testing
+        // const puffer = new createjs.Sprite(LoadManager.Spritesheets.Puffer_Spritesheet, "pufferIdle");
+        // puffer.x = 100;
+        // puffer.y = 200;
+        // (puffer as any).on("click", () => {
+        //     puffer.gotoAndPlay("pufferAngry")
+        // })
+        // this._container.addChild(puffer);
+
+
         //add level data if it exists
         if(this._game.CurrentLevelData != null) {
             //load in critters
@@ -165,12 +199,22 @@ export class GameScreen extends Screen {
                         const fish = (ObjectPool.checkout(POOL.FISH) as Fish);
                         fish.create(this._fishContainer);
                         if(data.speed != null) fish.Speed = data.speed; //set variables
-                        if(data.x != null) fish.X = data.x;
-                        if(data.y != null) fish.Y = data.y;
+                        if(data.x != null) fish.X = data.x * this._game.Scaling;
+                        if(data.y != null) fish.Y = data.y * this._game.Scaling;
+                        // if(data.x != null) fish.X = data.x;
+                        // if(data.y != null) fish.Y = data.y;
                         if(data.flip != null && data.flip) fish.DirectionX = -1;
                         fish.setNaturalY();
                         this._fishes.push(fish);
                         break;
+                    case POOL.PUFFERFISH:
+                        const puffer = (ObjectPool.checkout(POOL.PUFFERFISH) as Puffer);
+                        puffer.create(this._pufferContainer);
+                        if(data.speed != null) puffer.Speed = data.speed; //set variables
+                        if(data.x != null) puffer.X = data.x * this._game.Scaling;
+                        if(data.y != null) puffer.Y = data.y * this._game.Scaling;
+                        if(data.flip != null && data.flip) puffer.DirectionX = -1;
+                        this._puffers.push(puffer);
                 }      
             }
 
@@ -196,8 +240,17 @@ export class GameScreen extends Screen {
 
     public destroy() {
         this._cat.destroy();
-        this._fishes.forEach(f => f.destroy());
+        this._fishes.forEach(f => {
+            f.destroy();
+            ObjectPool.return(f);
+        });
+        this._puffers.forEach(f => {
+            f.destroy();
+            ObjectPool.return(f);
+        });
+
         this._fishContainer.removeAllChildren();
+        this._pufferContainer.removeAllChildren();
 
         this._fishes = [];
 
@@ -210,6 +263,9 @@ export class GameScreen extends Screen {
         //update entities
         this._fishes.forEach(fish => {
             fish.update(normalizedTime);
+        });
+        this._puffers.forEach(puffer => {
+            puffer.update(normalizedTime);
         });
 
         this._cat.update(normalizedTime);
@@ -226,6 +282,16 @@ export class GameScreen extends Screen {
 
     public disable() {
         (this._container as any).removeAllEventListeners();
+    }
+
+    public reset() {
+        this._fishes.forEach(f => f.destroy());
+        this._puffers.forEach(p => p.destroy());
+
+        this._fishes = [];
+        this._puffers = [];
+
+        super.reset();
     }
     /*--------------- GETTERS & SETTERS --------------*/
     public get Game() { return this._game; }

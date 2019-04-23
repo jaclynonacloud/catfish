@@ -10,12 +10,14 @@ export class Fish extends Entity implements IEnableable {
     private _naturalY:number;
 
     private _isCaught:boolean;
+    private _isReturning:boolean;
 
     constructor(gameScreen:GameScreen) {
         super(gameScreen, LoadManager.Spritesheets.Peeper_Spritesheet);
         this._speed = 1;
 
         this._isCaught = false;
+        this._isReturning = false;
 
         this._sprite.gotoAndPlay(Fish.ANIMATION.Slow);
     }
@@ -40,6 +42,12 @@ export class Fish extends Entity implements IEnableable {
         this._sprite.gotoAndPlay(Fish.ANIMATION.Panic);
     }
 
+    public release() {
+        this._isCaught = false;
+        //return to natural y position
+        this._isReturning = true;
+    }
+
 
     /**Test to see if global position hits sprite. */
     public testHit(x:number, y:number):boolean {
@@ -49,6 +57,11 @@ export class Fish extends Entity implements IEnableable {
     /*--------------- EVENTS -------------------------*/
     /*--------------- OVERRIDES ----------------------*/
     destroy() {
+        //reset flags
+        this._isCaught = false;
+        //reset animations
+        this._sprite.gotoAndPlay(Fish.ANIMATION.Slow);
+
         this.disable();
         return super.destroy();
     }
@@ -59,6 +72,18 @@ export class Fish extends Entity implements IEnableable {
         //move the fishy
         if(!this._isCaught)
             this.X += this._speed * gameTime * this._direction.x;
+        //--if returning, swim to natural y
+        if(this._isReturning) {
+            //if we are still far away, swim!
+            if(Math.abs(this.Y - this._naturalY) > 30) {
+                const isNeg = this.Y > this._naturalY;
+                this.Y += (isNeg) ? -10 : 10;
+            }
+            else {
+                this._isReturning = false;
+                this._sprite.gotoAndPlay(Fish.ANIMATION.Slow);
+            }
+        }
 
         //test collision
         if(!this.IsIgnoringCollision) {

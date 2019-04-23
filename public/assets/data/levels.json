@@ -6,7 +6,9 @@
                 "data":[
                     { "id":"fish", "x":100, "y":150, "speed":2 },
                     { "id":"fish", "x":50, "y":300, "speed":4 },
-                    { "id":"fish", "x":250, "y":600, "speed":3, "flip":true }
+                    { "id":"fish", "x":250, "y":600, "speed":4.5, "flip":true },
+                    { "id":"fish", "x":120, "y":750, "speed":3.5, "flip":false },
+                    { "id":"puffer", "x":350, "y":400, "speed":3, "flip":true }
                 ] 
             },
             { 

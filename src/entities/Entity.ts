@@ -21,12 +21,13 @@ export class Entity implements ICreateable<Entity>, IUpdateable {
         this._ignoreCollisionTimer = 0;
 
         //get the game scale
-        // this._scaling = this._gameScreen.Game.Scaling;
+        this._scaling = this._gameScreen.Game.Scaling;
     }
 
     /*--------------- METHODS ------------------------*/
     public create(container:createjs.Container):Entity {
         // (this._sprite as any).scale = this._scaling;
+
         //move to main container
         if(container == null)
             this._gameScreen.Game.Stage.addChild(this._sprite);

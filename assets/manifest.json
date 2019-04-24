@@ -91,28 +91,62 @@
         "src":"./assets/sounds/win.wav",
         "id":"Win"
     },
+
+
     {
-        "src":"./assets/sounds/music_1.wav",
-        "id":"Music1"
+        "src":"./assets/sounds/ambience/Woowoo and then some beats.mp3",
+        "id":"woowoobeat"
     },
     {
-        "src":"./assets/sounds/music_2.wav",
-        "id":"Music2"
+        "src":"./assets/sounds/ambience/intro.wav",
+        "id":"intro"
     },
     {
-        "src":"./assets/sounds/music_3.wav",
-        "id":"Music3"
+        "src":"./assets/sounds/ambience/babylevels.wav",
+        "id":"babylevels"
     },
     {
-        "src":"./assets/sounds/music_4.wav",
-        "id":"Music4"
+        "src":"./assets/sounds/ambience/notsosmoothcriminal.wav",
+        "id":"notsosmoothcriminal"
     },
     {
-        "src":"./assets/sounds/music_5.wav",
-        "id":"Music5"
+        "src":"./assets/sounds/ambience/theendquestionmark.wav",
+        "id":"theendquestionmark"
     },
     {
-        "src":"./assets/sounds/music_6.wav",
-        "id":"Music6"
+        "src":"./assets/sounds/ambience/dootdootdoot.wav",
+        "id":"dootdootdoot"
+    },
+    {
+        "src":"./assets/sounds/ambience/egyptiangroove.wav",
+        "id":"egyptiangroove"
+    },
+    {
+        "src":"./assets/sounds/ambience/iforgotaboutthissong.wav",
+        "id":"iforgotaboutthissong"
+    },
+    {
+        "src":"./assets/sounds/ambience/simplecontemplation.wav",
+        "id":"simplecontemplation"
+    },
+    {
+        "src":"./assets/sounds/ambience/swamplands.wav",
+        "id":"swamplands"
+    },
+    {
+        "src":"./assets/sounds/ambience/swimtothebottom.wav",
+        "id":"swimtothebottom"
+    },
+    {
+        "src":"./assets/sounds/ambience/pixiesticks.wav",
+        "id":"pixiesticks"
+    },
+    {
+        "src":"./assets/sounds/ambience/leveldotexe.wav",
+        "id":"leveldotexe"
+    },
+    {
+        "src":"./assets/sounds/ambience/justlikemomusedtosynth.wav",
+        "id":"justlikemomusedtosynth"
     }
 ]

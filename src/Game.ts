@@ -1,4 +1,5 @@
 import { LoadManager } from "./managers/LoadManager";
+import { ProgressManager } from "./managers/ProgressManager";
 import { ScreenManager } from "./managers/ScreenManager";
 import { SplashScreen } from "./screens/SplashScreen";
 import { MenuScreen } from "./screens/MenuScreen";
@@ -77,10 +78,12 @@ export class Game {
                     Logging.error(err);
                     return;
                 });
+            //load progress data
+            await ProgressManager.loadWorldsData(DataManager.WorldsData);
 
             //set the current screen
             //game test, load desired level patch -- if autoloading to game screen
-            this.changeCurrentLevel(DataManager.getLevelDataByIndex(0));
+            this.changeCurrentLevel(DataManager.getLevelDataByIndex(4));
 
             Logging.success("Level Data Loaded Successfully!");
 

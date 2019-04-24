@@ -250,6 +250,13 @@ export class MenuScreen extends Screen {
         (this._staticContainer.Sprites.bg as any).off("click", this._onDragEnd);
 
 
+        this._mainButtonsContainer.Sprites.btnNewGame.removeAllEventListeners();
+        this._mainButtonsContainer.Sprites.btnOptions.removeAllEventListeners();
+        this._mainButtonsContainer.Sprites.btnLevelSelect.removeAllEventListeners();
+        this._mainButtonsContainer.Sprites.btnExit.removeAllEventListeners();
+        this._staticContainer.Sprites.bg.removeAllEventListeners();
+
+
         this._levelSelectDisplay.disable();
 
         this.reset();

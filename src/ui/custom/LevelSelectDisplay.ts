@@ -1,5 +1,6 @@
 import { Sprites } from "../Sprites";
 import { LoadManager } from "../../managers/LoadManager";
+import { ProgressManager } from "../../managers/ProgressManager";
 import { Game } from "../../Game";
 import { IEnableable } from "../../Interfaces";
 import { GameScreen } from "../../screens/GameScreen";
@@ -45,21 +46,24 @@ export class LevelSelectDisplay implements IEnableable {
         this.LevelText = "Hello World!";
 
 
-        //spoof some level data
-        this._levelsData = [
-            [
-                { name: "Welcome to the pond!", complete:true, unlocked:true, data:[0, 0, 0, 0, 0, 0, 0] },
-                { name: "A new adventure!", complete:true, unlocked:true, data:[0, 0, 0, 0, 0, 0, 0] },
-                { name: "Learn to aim!", complete:false, unlocked:true, data:[0, 0, 0, 0, 0, 0, 0] },
-                { name: "Persephone!", special:true, complete:false, unlocked:false, data:[0, 0, 0, 0, 0, 0, 0] },
-            ],
-            [
-                { name: "In deep water!", complete:false, unlocked:false, data:[0, 0, 0, 0, 0, 0, 0] },
-                { name: "An ocean of fish!", complete:false, unlocked:false, data:[0, 0, 0, 0, 0, 0, 0] },
-                { name: "Barnacles ahoy!", complete:false, unlocked:false, data:[0, 0, 0, 0, 0, 0, 0] },
-                { name: "Owen!", special:true, complete:false, unlocked:false, data:[0, 0, 0, 0, 0, 0, 0] },
-            ]
-        ];
+
+        //build levels data
+        this._levelsData = DataManager.WorldsData.worlds.map((world, i) => {
+            return [].concat.apply([], world as any)
+            .map((level, n) => {
+                let special = ProgressManager.ProgressData.specials[i][n];
+
+                let obj = level;
+                obj.unlocked = ProgressManager.ProgressData.levels[i][n].unlocked;
+                obj.completed = ProgressManager.ProgressData.levels[i][n].completed;
+                obj.special = (special != null);
+
+                return obj;
+            })
+        });
+
+        console.log("LEVEL DISPLAY DATA", this._levelsData);
+
 
 
         //build the level icons
@@ -72,7 +76,7 @@ export class LevelSelectDisplay implements IEnableable {
                 let sprite = Sprites.Buttons.LevelEmpty.clone();
                 if(levelData.special != null && levelData.special) sprite = Sprites.Buttons.LevelSpecialEmpty.clone();
                 // //completed
-                if(levelData.complete) {
+                if(levelData.completed) {
                     sprite = Sprites.Buttons.LevelComplete.clone();
                     if(levelData.special != null && levelData.special) sprite = Sprites.Buttons.LevelSpecialComplete;
                 }

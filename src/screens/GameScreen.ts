@@ -209,20 +209,20 @@ export class GameScreen extends Screen {
 
 
         //add level data if it exists
+        this.reset();
+        // this.destroy();
         if(this._game.CurrentLevelData != null) {
             //load in critters
             for(let i = 0; i < this._game.CurrentLevelData.data.length; i++) {
                 const data = this._game.CurrentLevelData.data[i];
                 switch(data.id) {
-                    case POOL.FISH:
                     case POOL.PERSEPHONE:
+                    case POOL.FISH:
                         const fish = (ObjectPool.checkout(data.id) as Fish);
                         fish.create(this._fishContainer);
                         if(data.speed != null) fish.Speed = data.speed; //set variables
-                        if(data.x != null) fish.X = data.x * this._game.Scaling;
-                        if(data.y != null) fish.Y = data.y * this._game.Scaling;
-                        // if(data.x != null) fish.X = data.x;
-                        // if(data.y != null) fish.Y = data.y;
+                        if(data.x != null) fish.X = data.x;
+                        if(data.y != null) fish.Y = data.y;
                         if(data.flip != null && data.flip) fish.DirectionX = -1;
                         fish.setNaturalY();
                         this._fishes.push(fish);
@@ -231,8 +231,8 @@ export class GameScreen extends Screen {
                         const puffer = (ObjectPool.checkout(POOL.PUFFERFISH) as Puffer);
                         puffer.create(this._pufferContainer);
                         if(data.speed != null) puffer.Speed = data.speed; //set variables
-                        if(data.x != null) puffer.X = data.x * this._game.Scaling;
-                        if(data.y != null) puffer.Y = data.y * this._game.Scaling;
+                        if(data.x != null) puffer.X = data.x;
+                        if(data.y != null) puffer.Y = data.y;
                         if(data.flip != null && data.flip) puffer.DirectionX = -1;
                         this._puffers.push(puffer);
                 }      
@@ -240,6 +240,7 @@ export class GameScreen extends Screen {
 
             //set fish total
             this._remainingFish = this._fishes.length;
+            // console.log("FISHIE NUM?", this._remainingFish, this._fishContainer.children.length);
         }
         //get the level tutorials
         if(this._game.CurrentLevelData.tutorials != null) {
@@ -271,22 +272,18 @@ export class GameScreen extends Screen {
     }
 
     public destroy() {
+
         this._cat.destroy();
         this._fishes.forEach(f => {
             f.destroy();
-            ObjectPool.return(f);
         });
         this._puffers.forEach(f => {
             f.destroy();
-            ObjectPool.return(f);
         });
 
         ObjectPool.releaseAllObjects();
 
-        this._fishContainer.removeAllChildren();
-        this._pufferContainer.removeAllChildren();
-
-        this._fishes = [];
+        this.reset();
 
         return super.destroy();
     }
@@ -322,13 +319,18 @@ export class GameScreen extends Screen {
     }
 
     public reset() {
-        this._fishes.forEach(f => f.destroy());
-        this._puffers.forEach(p => p.destroy());
+        this._cat.X = 290;
+        this._fishes.forEach(f => { ObjectPool.return(f); });
+        this._puffers.forEach(f => { ObjectPool.return(f); });
+
+        ObjectPool.releaseAllObjects();
+
+        this._fishContainer.removeAllChildren();
+        this._pufferContainer.removeAllChildren();
 
         this._fishes = [];
         this._puffers = [];
 
-        this._cat.X = 290;
 
         super.reset();
     }

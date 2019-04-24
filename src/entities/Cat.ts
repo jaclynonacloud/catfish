@@ -59,9 +59,6 @@ export class Cat extends Entity implements IEnableable {
         //move to x position
         this.X = this.GameScreen.Game.Stage.mouseX;
 
-
-        console.log("START SPEED:", this.Speed);
-
         //grab to y position
         const speed = (this.GameScreen.Game.Stage.mouseY / 2) * this.Speed;
         this._catYTween = createjs.Tween
@@ -107,7 +104,6 @@ export class Cat extends Entity implements IEnableable {
     }
 
     public caught(fishes:Fish[]) {
-        console.log("I CAUGHT");
         if(fishes.length <= 0) return;
         this._isRising = true;  
         
@@ -125,9 +121,6 @@ export class Cat extends Entity implements IEnableable {
             //control the fish
             f.Y = this.Y;
         });
-        
-        console.log("I WAS CAUGHT, NOW RISING");
-        console.log("FISH CAUGHT SPEED:", this.Speed);
 
         if(!hasNewFish) return;
         
@@ -154,7 +147,6 @@ export class Cat extends Entity implements IEnableable {
     /**Called when hit by an enemy. */
     public injure() {
         this._isInjured = true;
-        console.log("TAKING DAMAGE");
         //start hurt animation
         //end any current tweening
         createjs.Tween.removeTweens(this._sprite);
@@ -202,7 +194,6 @@ export class Cat extends Entity implements IEnableable {
 
         //if we are rising, attempt to catch more fish
         if(this._isRising && !this._isInjured) {
-            console.log("TRY TO GRAB");
             //try to grab a fish
             const fishes = this.GameScreen.tryToGrabFishes(this.X , this.Y);
             //see if a fish was grabbed

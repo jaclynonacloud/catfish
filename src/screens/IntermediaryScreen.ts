@@ -67,11 +67,6 @@ export class IntermediaryScreen extends Screen {
 
     public enable() {
         super.enable();
-
-        //for testing
-        (this._container as any).on("click", (e) => {
-            ScreenManager.setCurrentScreen("menu", this.Stage);
-        }, this, true);
     }
 
     public disable() {

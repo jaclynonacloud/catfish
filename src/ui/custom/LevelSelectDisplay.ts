@@ -93,8 +93,6 @@ export class LevelSelectDisplay implements IEnableable {
         });
 
 
-
-
         //build the level icons
         for(let r = 0; r < this._levelsData.length; r++) {
             //iterate through levels
@@ -106,7 +104,7 @@ export class LevelSelectDisplay implements IEnableable {
                 // //completed
                 if(levelData.completed) {
                     sprite = Sprites.Buttons.LevelComplete.clone();
-                    if(levelData.special != null && levelData.special) sprite = Sprites.Buttons.LevelSpecialComplete;
+                    if(levelData.special != null && levelData.special) sprite = Sprites.Buttons.LevelSpecialComplete.clone();
                 }
                 //locked
                 if(!levelData.unlocked) {

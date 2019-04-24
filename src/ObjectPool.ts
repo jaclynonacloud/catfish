@@ -45,7 +45,7 @@ export class ObjectPool {
     /**Returns all objects to pool. */
     public static releaseAllObjects() {
         ObjectPool._pool.forEach(p => {
-            ObjectPool.return(p.obj);
+            p.active = false;
         });
     }
 

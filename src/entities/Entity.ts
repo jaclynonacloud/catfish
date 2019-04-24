@@ -73,6 +73,11 @@ export class Entity implements ICreateable<Entity>, IUpdateable {
         if((this.X + extents.x) > bounds.width) return Entity.HIT.Right;
         else if(this.X + extents.x < 0) return Entity.HIT.Left;
     }
+
+    public forceDirectionX(value) {
+        this._direction.x = value;
+        this._sprite.scaleX = value;
+    }
     /*--------------- ABSTRACTS ----------------------*/
     /*--------------- EVENTS -------------------------*/
     /*--------------- OVERRIDES ----------------------*/

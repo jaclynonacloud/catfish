@@ -2,7 +2,6 @@ import { Game } from "../Game";
 import { Entity } from "./Entity";
 import { LoadManager } from "../managers/LoadManager";
 import { IEnableable } from "../Interfaces";
-import { Logging } from "../Functions";
 import { GameScreen } from "../screens/GameScreen";
 import { Fish } from "./Fish";
 import { SoundManager } from "../managers/SoundManager";

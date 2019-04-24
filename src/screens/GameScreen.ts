@@ -118,8 +118,6 @@ export class GameScreen extends Screen {
     }
 
     public collectFish(fish:Fish) {
-        //get fish
-        Logging.success("GOT FISH!");
 
         const killedFish = fish.destroy();
 
@@ -130,8 +128,6 @@ export class GameScreen extends Screen {
 
             //if all our fish are gone, end the game!
             if(this._remainingFish <= 0) {
-                //win game!
-                Logging.success("GAME IS OVER!");
                 //call win
                 this.win();
             }
@@ -211,16 +207,6 @@ export class GameScreen extends Screen {
         this._cat.create(this._container);
 
 
-        //testing
-        // const puffer = new createjs.Sprite(LoadManager.Spritesheets.Puffer_Spritesheet, "pufferIdle");
-        // puffer.x = 100;
-        // puffer.y = 200;
-        // (puffer as any).on("click", () => {
-        //     puffer.gotoAndPlay("pufferAngry")
-        // })
-        // this._container.addChild(puffer);
-
-
         //add level data if it exists
         // this.reset();
         // this.destroy();
@@ -238,7 +224,7 @@ export class GameScreen extends Screen {
                         if(data.speed != null) fish.Speed = data.speed; //set variables
                         if(data.x != null) fish.X = data.x;
                         if(data.y != null) fish.Y = data.y;
-                        if(data.flip != null && data.flip) fish.DirectionX = -1;
+                        fish.forceDirectionX((data.flip != null && data.flip) ? -1 : 1);
                         fish.setNaturalY();
                         this._fishes.push(fish);
                         break;
@@ -248,7 +234,7 @@ export class GameScreen extends Screen {
                         if(data.speed != null) puffer.Speed = data.speed; //set variables
                         if(data.x != null) puffer.X = data.x;
                         if(data.y != null) puffer.Y = data.y;
-                        if(data.flip != null && data.flip) puffer.DirectionX = -1;
+                        puffer.forceDirectionX((data.flip != null && data.flip) ? -1 : 1);
                         this._puffers.push(puffer);
                 }      
             }
@@ -269,7 +255,7 @@ export class GameScreen extends Screen {
         }
 
         //get the level music!
-        let musicKey = "Music2";
+        let musicKey = "babylevels";
         if(this._game.CurrentLevelData.music) musicKey = this._game.CurrentLevelData.music;
         SoundManager.playAmbienceWithFadeIn("ambience", LoadManager.Sounds[musicKey], true, 0.4, 400);
 

@@ -2,7 +2,6 @@ import { Game } from "../Game";
 import { Entity } from "./Entity";
 import { LoadManager } from "../managers/LoadManager";
 import { IEnableable } from "../Interfaces";
-import { Logging } from "../Functions";
 
 export class Fish extends Entity implements IEnableable {
     private _speed:number;
@@ -35,7 +34,6 @@ export class Fish extends Entity implements IEnableable {
     public catch() {
         if(this._isCaught) return;
         
-        Logging.message("Fish was grabbed!");
         this._isCaught = true;
 
         this._sprite.gotoAndPlay(Fish.ANIMATION.Panic);

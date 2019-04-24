@@ -212,7 +212,8 @@ export class MenuScreen extends Screen {
     /*--------------- OVERRIDES ----------------------*/
     public create(stage:createjs.StageGL):Screen {
         //start music
-        SoundManager.playAmbienceWithFadeIn("ambience", LoadManager.Sounds.Music1, true, 1, 400);
+        SoundManager.playAmbienceWithFadeIn("ambience", LoadManager.Sounds["intro"], true, 1, 400);
+        // SoundManager.playAmbienceWithFadeIn("ambience", LoadManager.Sounds["woowoobeat"], true, 1, 400);
 
         //add in the containers
         this._staticContainer.Sprites.bg.y = 0;
@@ -227,6 +228,13 @@ export class MenuScreen extends Screen {
         this._swipeContainer.addChild(this._levelSelectDisplay.Container);
 
         this._fancyFish.visible = false;
+
+        //kill any existing collectibles
+        this._collectedContainer.removeAllChildren();
+        this._collectibleFish.forEach(f => {
+            f = null;
+        });
+        this._collectibleFish = [];
 
         return super.create(stage);
     }

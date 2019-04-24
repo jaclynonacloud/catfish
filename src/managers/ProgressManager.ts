@@ -61,7 +61,7 @@ export class ProgressManager {
             nextLevel.unlocked = true;
         }
         else {
-            if(worldIndex+1 < ProgressManager._levelsProgress.length-1) {
+            if(worldIndex+1 < ProgressManager._levelsProgress.length) {
                 const nextWorld = ProgressManager._levelsProgress[worldIndex+1][0];
                 if(nextWorld != null) nextWorld.unlocked = true;
             }

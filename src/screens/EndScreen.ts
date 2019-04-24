@@ -71,12 +71,16 @@ export class EndScreen extends Screen {
 
         //try again
         (this._buttonsContainer.Sprites["btnTryAgain"] as any).on("click", () => {
+            //play the sound
+            SoundManager.playSFX(LoadManager.Sounds.BTNSelect);
             //restart this level
             this._game.changeCurrentLevel(this._game.CurrentLevelData);
             ScreenManager.setCurrentScreen("game", this._game.Stage);
         }, this, true);
         //next level
         (this._buttonsContainer.Sprites["btnNextLevel"] as any).on("click", () => {
+            //play the sound
+            SoundManager.playSFX(LoadManager.Sounds.BTNSelect);
             //find the next level
             const nextLevel = DataManager.getNextLevel(this._game.CurrentLevelData);
             //if there is no next level, go back to menu
@@ -86,7 +90,6 @@ export class EndScreen extends Screen {
                 return;
             }
 
-            Logging.error("WHERE AM I? " + nextLevel.name);
             this._game.changeCurrentLevel(nextLevel);
             //go to intermediary screen
             const intermediary = ScreenManager.getScreenByKey("intermediary") as IntermediaryScreen;
@@ -100,6 +103,8 @@ export class EndScreen extends Screen {
         }, this, true);
         //main menu
         (this._buttonsContainer.Sprites["btnMainMenu"] as any).on("click", () => {
+            //play the sound
+            SoundManager.playSFX(LoadManager.Sounds.BTNSelect);
             //go to main menu
             ScreenManager.setCurrentScreen("menu", this._game.Stage);
         }, this, true);

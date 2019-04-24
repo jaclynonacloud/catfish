@@ -16,7 +16,8 @@
                 ]
             },
             { 
-                "name": "Learn to aim!", 
+                "name": "Learn to aim!",
+                "music": "dootdootdoot",
                 "data":[
                     { "id":"fish", "x":0, "y":0, "speed":3 },
                     { "id":"fish", "x":100, "y":100, "speed":3 }
@@ -25,7 +26,7 @@
             { 
                 "name": "Persephone!", 
                 "tutorials": ["special"],
-                "music": "Music6",
+                "music": "simplecontemplation",
                 "special":true,
                 "unlocks":"Persephone",
                 "data":[
@@ -40,8 +41,8 @@
             { 
                 "name": "I'm having a cat-shtma attack!",
                 "tutorials": ["puffer"],
-                "music": "Music4",
-                "background": "bg3",
+                "music": "iforgotaboutthissong",
+                "background": "bg2",
                 "data":[
                     { "id":"fish", "x":100, "y":150, "speed":2 },
                     { "id":"fish", "x":50, "y":300, "speed":4 },
@@ -52,6 +53,8 @@
             },
             { 
                 "name": "An ocean of fish!",
+                "music": "babylevels",
+                "background": "bg2",
                 "data":[
                     { "id":"fish", "x":0, "y":0, "speed":3 },
                     { "id":"fish", "x":100, "y":100, "speed":3 }
@@ -59,6 +62,8 @@
             },
             { 
                 "name": "Barnacles ahoy!",
+                "music": "pixiesticks",
+                "background": "bg2",
                 "data":[
                     { "id":"fish", "x":0, "y":0, "speed":3 },
                     { "id":"fish", "x":100, "y":100, "speed":3 }
@@ -67,12 +72,57 @@
             { 
                 "name": "Owen!", 
                 "special":true,
-                "music": "Music6",
+                "music": "swimtothebottom",
+                "background": "bg2",
                 "unlocks":"Owen",
                 "data":[
                     { "id":"fish", "x":0, "y":0, "speed":3 },
                     { "id":"fish", "x":100, "y":100, "speed":3 },
                     { "id":"owen", "x":230, "y":480, "speed":3 }
+                ]
+            }
+        ],
+        [
+            { 
+                "name": "Perilous waters!",
+                "music": "swamplands",
+                "background": "bg3",
+                "data":[
+                    { "id":"fish", "x":100, "y":150, "speed":2 },
+                    { "id":"fish", "x":50, "y":300, "speed":4 },
+                    { "id":"fish", "x":250, "y":600, "speed":4.5, "flip":true },
+                    { "id":"fish", "x":120, "y":750, "speed":3.5, "flip":false },
+                    { "id":"puffer", "x":390, "y":310, "speed":3, "flip":false }
+                ]
+            },
+            { 
+                "name": "Rocky waters!",
+                "music": "justlikemomusedtosynth",
+                "background": "bg3",
+                "data":[
+                    { "id":"fish", "x":0, "y":0, "speed":3 },
+                    { "id":"fish", "x":100, "y":100, "speed":3 }
+                ]
+            },
+            { 
+                "name": "Wet waters!",
+                "music": "pixiesticks",
+                "background": "bg3",
+                "data":[
+                    { "id":"fish", "x":0, "y":0, "speed":3 },
+                    { "id":"fish", "x":100, "y":100, "speed":3 }
+                ]
+            },
+            { 
+                "name": "Riley!", 
+                "special":true,
+                "music": "theendquestionmark",
+                "background": "bg3",
+                "unlocks":"Riley",
+                "data":[
+                    { "id":"fish", "x":0, "y":0, "speed":3 },
+                    { "id":"fish", "x":100, "y":100, "speed":3 },
+                    { "id":"riley", "x":230, "y":480, "speed":3 }
                 ]
             }
         ]

@@ -54,8 +54,6 @@ export class TutorialCreator {
 
             await new Promise(async(res, rej) => {
 
-                console.log("NUM", i);
-
                 switch(key) {
                     //first will play multiple screens
                     case TutorialCreator.KEY.First :

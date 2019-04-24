@@ -228,7 +228,6 @@ export class MenuScreen extends Screen {
     }
 
     public enable() {
-        console.log("LOAD IN MENU ACTIONS");
         super.enable();
         //listen to events
         (this._mainButtonsContainer.Sprites.btnNewGame as any).on("click", this._onNewGame, this, true);
@@ -245,13 +244,10 @@ export class MenuScreen extends Screen {
         (this._staticContainer.Sprites.bg as any).on("mousedown", this._onDragStart, this);
         (this._staticContainer.Sprites.bg as any).on("click", this._onDragEnd, this);
 
-        // this._mainButtonsContainer.Sprites.btnOptions.on("click", () => console.log("HELLO I CLIC"));
-
         this._levelSelectDisplay.enable();
 
         //testing -- add fakey collectible fish
         //get any collected fish CLASS names
-        console.log("MY PROGRESS DATA AT NOw", ProgressManager.ProgressData)
         const collFish = [].concat.apply([], ProgressManager.ProgressData.specials).filter(d => d != null && d.collected).map(d => d.unlocks);
 
         
@@ -263,7 +259,6 @@ export class MenuScreen extends Screen {
             }
         });
             
-        console.log(collFish);
 
         //add the fish to the container
         this._collectibleFish.forEach(f => {
@@ -284,8 +279,6 @@ export class MenuScreen extends Screen {
             .get(this._fancyFish)
             .to({ alpha:1 }, 500, createjs.Ease.circIn);
         }
-
-        console.log("SPECIAL FISHIES?", this._collectibleFish);
 
 
 

@@ -41,16 +41,12 @@ export class Game {
         //start loading game assets
         new Promise(async(res, rej) => {
             //create the stage
-            console.log("Readying stage!");
             this._stage = new createjs.StageGL(this._canvas, { antialias: true });
             // this._stage = new createjs.StageGL(this._canvas);
             (this._stage as any).setClearColor("#000000");
             this._stage.enableMouseOver(10);
             this._stage.update();
 
-            // this._stage.scaleX = this._stage.scaleY = 0.8;
-
-            console.log(this._stage, this._canvas);
 
             //load the splash screen
             ScreenManager.registerScreen("splash", new SplashScreen(this));
@@ -60,7 +56,6 @@ export class Game {
 
             //listen to asset updates
             (this._stage as any).addEventListener(LoadManager.ASSETS_UPDATED, (e) => {
-                console.log(LoadManager.Percentage);
                 //update percent
                 splash.Text = Math.ceil(LoadManager.Percentage * 100).toString();
             });

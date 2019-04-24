@@ -248,7 +248,6 @@ export class Cat extends Entity implements IEnableable {
     // }
     public get Speed() { 
         const caughtFishMult = ((this._caughtFish.length > 0) ? 1 + (this._caughtFish.length + this._fishCaughtMultiplier) : 1);
-        console.log(caughtFishMult);
 
         return caughtFishMult * this._speed;
     }

@@ -92,7 +92,6 @@ export class LevelSelectDisplay implements IEnableable {
             })
         });
 
-        console.log("LEVEL DISPLAY DATA", this._levelsData);
 
 
 
@@ -101,7 +100,6 @@ export class LevelSelectDisplay implements IEnableable {
             //iterate through levels
             for(let i = 0; i < this._levelsData[r].length; i++) {
                 const levelData = this._levelsData[r][i];
-                console.log("LEVEL", levelData);
                 //decide the sprite
                 let sprite = Sprites.Buttons.LevelEmpty.clone();
                 if(levelData.special != null && levelData.special) sprite = Sprites.Buttons.LevelSpecialEmpty.clone();
@@ -160,7 +158,6 @@ export class LevelSelectDisplay implements IEnableable {
         SoundManager.fadeOutAmbience("ambience");
 
         //make sure this level is UNLOCKED
-        console.log("MY LEVEL DATA", data);
         this._game.changeCurrentLevel(data);
         //go to intermediary screen
         const intermediary = ScreenManager.getScreenByKey("intermediary") as IntermediaryScreen;

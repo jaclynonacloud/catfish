@@ -59,13 +59,11 @@ export class ScreenManager {
             ScreenManager._currentScreen.create(stage);
             ScreenManager._currentScreen.Container.alpha = 0;
             ScreenManager._currentScreen.disable(); //disable until ready
-            console.log("FADE IN")
             //fade in
             createjs.Tween
                 .get(ScreenManager._currentScreen.Container)
                 .to({ alpha:1 }, 1200, createjs.Ease.linear)
                 .call(() => {
-                    console.log("DONE");
                     ScreenManager._currentScreen.enable();
                     res();
                 });

@@ -23,10 +23,6 @@ export class ProgressManager {
     public static loadWorldsData(worldsData:WorldsData) {
         ProgressManager._worldsData = worldsData;
 
-        //build data for world set
-
-        console.log(worldsData);
-
         ProgressManager._levelsProgress = worldsData.worlds.map(world => {
             return [].concat.apply([], world as any)
                 .map(level => {
@@ -43,8 +39,6 @@ export class ProgressManager {
 
         //unlock level 1
         ProgressManager._levelsProgress[0][0].unlocked = true;
-
-        console.log("PROGRESS", ProgressManager._levelsProgress, ProgressManager._specialsProgress);
 
         //read cookie data
         ProgressManager._readCookieData();
@@ -109,7 +103,6 @@ export class ProgressManager {
 
     /**Saves the progress data to a cookie or two. */
     public static saveCookieData() {
-        console.log("MY NEW SAVE DATA", ProgressManager.ProgressData);
 
         document.cookie = `progData=${JSON.stringify(ProgressManager.ProgressData)};path=/`;
     }

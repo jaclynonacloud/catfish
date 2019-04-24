@@ -91,8 +91,6 @@ export class LoadManager {
     /*--------------- EVENTS -------------------------*/
     private static _onLoaded(e) {
 
-        console.log("asset loaded: " + e.item.src + " type: " + e.item.type);
-
         switch(e.item.type) {
             case (createjs as any).Types.JAVASCRIPT: {
                 //load the spritesheet

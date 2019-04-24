@@ -100,13 +100,11 @@ export class GameScreen extends Screen {
 
     /**Tests to see if we hit a puffer. */
     public hasHitAPuffer(x:number, y:number):Boolean {
-        // console.log("TESTING PUFF");
 
         let hasHitPuffer = false;
         const hitObjects = this._container.getObjectsUnderPoint(x, y, 0);
         for(let i = 0; i < this._puffers.length; i++) {
             if(hitObjects.indexOf(this._puffers[i].Sprite) != -1) {
-                console.log ("I HIT A PUFF");
                 this._puffers[i].puff();
                 return true;
             }
@@ -249,7 +247,6 @@ export class GameScreen extends Screen {
 
             //set fish total
             this._remainingFish = this._fishes.length;
-            // console.log("FISHIE NUM?", this._remainingFish, this._fishContainer.children.length);
         }
         //get the level tutorials
         if(this._game.CurrentLevelData.tutorials != null) {
@@ -276,7 +273,6 @@ export class GameScreen extends Screen {
 
         //update the game HUD for this round
         const levelData = this._game.CurrentLevelData;
-        console.log(this._game.CurrentLevelData);
         const showScore = (levelData.showScore != null && !levelData.showScore) ? false : true;
         const showTimer = (levelData.duration != null);
         const showFishRemain = (levelData.showRemainingFish != null && !levelData.showRemainingFish) ? false : true;

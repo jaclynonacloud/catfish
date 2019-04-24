@@ -1,36 +1,30 @@
 import { ICreateable, IUpdateable } from "../Interfaces";
-import { GameScreen } from "../screens/GameScreen";
 import { Game } from "../Game";
 
 export class Entity implements ICreateable<Entity>, IUpdateable {
-    private _gameScreen:GameScreen;
+    private _game:Game;
     protected _name:string;
     protected _sprite:createjs.Sprite;
     protected _direction:{ x:number, y:number };
-    private _scaling:number;
 
     private _isIgnoringCollision:boolean;
     private _ignoreCollisionTimer:number;
 
-    constructor(gameScreen:GameScreen, spritesheet:createjs.SpriteSheet) {
-        this._gameScreen = gameScreen;
+    constructor(game:Game, spritesheet:createjs.SpriteSheet) {
+        this._game = game;
         this._sprite = new createjs.Sprite(spritesheet);
         this._direction = { x:1, y:1 };
 
         this._isIgnoringCollision = false;
         this._ignoreCollisionTimer = 0;
-
-        //get the game scale
-        this._scaling = this._gameScreen.Game.Scaling;
     }
 
     /*--------------- METHODS ------------------------*/
     public create(container:createjs.Container):Entity {
-        // (this._sprite as any).scale = this._scaling;
 
         //move to main container
         if(container == null)
-            this._gameScreen.Game.Stage.addChild(this._sprite);
+            this._game.Stage.addChild(this._sprite);
         else
             container.addChild(this._sprite);
         return this;
@@ -69,7 +63,7 @@ export class Entity implements ICreateable<Entity>, IUpdateable {
             }
         }
         // const bounds = { width:this._game.StageWidth, height: this._game.StageHeight };
-        const bounds = { width:this._gameScreen.Game.StageWidth, height: this._gameScreen.Game.StageHeight };
+        const bounds = { width:this._game.StageWidth, height: this._game.StageHeight };
         const extents = {   
             x:(this._direction.x > 0) ? (this.Bounds.Width - reg.x) : -reg.x, 
             y:(this._direction.y > 0) ? (this.Bounds.Height - reg.y) : -reg.y 
@@ -86,7 +80,7 @@ export class Entity implements ICreateable<Entity>, IUpdateable {
     public static get IGNORE_COLLISION() { return 20; }
     public static get HIT() { return Object.freeze({Top:0, Right:1, Bottom:2, Left:3}); }
 
-    protected get GameScreen() { return this._gameScreen; }
+    protected get Game():Game { return this._game; }
 
     public get Sprite() { return this._sprite; }
     public get Parent() { return this._sprite.parent; }
@@ -102,6 +96,7 @@ export class Entity implements ICreateable<Entity>, IUpdateable {
         //flip sprite if our direction has changed
         if(this._direction.x != lastX) this._sprite.scaleX *= -1;
     }
+    public get DirectionX() { return this._direction.x; }
 
     public get Bounds() { 
         let bounds = this._sprite.getBounds();

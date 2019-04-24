@@ -35,3 +35,17 @@ export interface IRect {
     top?: number;
     bottom?: number;
 }
+
+
+
+
+/*https://stackoverflow.com/questions/15338610/dynamically-loading-a-typescript-class-reflection-for-typescript*/
+export class InstanceLoader<T> {
+    constructor(private context:Object) { }
+
+    public getInstance(name:string, ...args:any[]) :T {
+        var instance = Object.create(this.context[name].prototype);
+        instance.constructor.apply(instance, args);
+        return <T>instance;
+    }
+}

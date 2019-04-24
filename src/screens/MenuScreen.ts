@@ -8,10 +8,12 @@ import { Logging } from "../Functions";
 import { Game } from "../Game";
 import { LevelSelectDisplay } from "../ui/custom/LevelSelectDisplay";
 import { IntermediaryScreen } from "./IntermediaryScreen";
-import { GameScreen } from "./GameScreen";
+import { GameScreen, POOL } from "./GameScreen";
 import { DataManager } from "../managers/DataManager";
 import { Special } from "../entities/specials/Special";
 import { Persephone } from "../entities/specials/Persephone";
+import { ProgressManager } from "../managers/ProgressManager";
+import { InstanceLoader } from "../Interfaces";
 
 export class MenuScreen extends Screen {
     private _game:Game;
@@ -75,14 +77,7 @@ export class MenuScreen extends Screen {
         this._fancyFish.x = this._game.StageWidth - this._fancyFish.getBounds().width - 20;
         this._fancyFish.y = this._game.StageHeight - this._fancyFish.getBounds().height - 20;
         this._mainContainer.addChild(this._fancyFish);
-        // this._mainContainer.addMany({
-        //     logo : new createjs.Sprite(LoadManager.Spritesheets.Catfish_Main, "logo"),
-        //     fishbowl : Sprites.Buttons.Fishbowl,
-        //     btnNewGame : new createjs.Sprite(LoadManager.Spritesheets.Catfish_Main, "btnNewGame"),
-        //     btnOptions : Sprites.Buttons.Options,
-        //     btnLevelSelect : Sprites.Buttons.LevelSelect,
-        //     btnExit : Sprites.Buttons.Exit
-        // });
+        this._fancyFish.visible = false;
 
         //setup options container
         this._optionsContainer = new Container();
@@ -103,19 +98,16 @@ export class MenuScreen extends Screen {
 
         //setup collected container
         this._collectedContainer = new createjs.Container;
+        this._collectedContainer.y += this._game.StageHeight;
+
+
+        this._collectibleFish = [];
 
 
         //setup properties
         this._swipeSpeed = 800;
         this._currentScreen = "main";
-        this._initialSwipePos = { x:-1, y:-1 };
-
-
-        //testing -- add fakey collectible fish
-        this._collectibleFish = [
-            new Persephone(ScreenManager.getScreenByKey("game") as GameScreen)
-        ];
-        
+        this._initialSwipePos = { x:-1, y:-1 };        
 
     }
 
@@ -148,13 +140,18 @@ export class MenuScreen extends Screen {
         createjs.Tween.get(this._swipeContainer).to({x:-this._game.StageWidth}, this._swipeSpeed, createjs.Ease.circOut);
         this._currentScreen = "levelSelect";
     }
+    private _onFish() {
+        Logging.message("Go to fish!");
+        createjs.Tween.get(this._swipeContainer).to({y:-this._game.StageHeight}, this._swipeSpeed, createjs.Ease.circOut);
+        this._currentScreen = "fish";
+    }
     private _onExit() {
         Logging.message("Go to exit!");
     }
 
     private _onMain() {
         Logging.message("Go to main!");
-        createjs.Tween.get(this._swipeContainer).to({x:0}, this._swipeSpeed, createjs.Ease.bounceOut);
+        createjs.Tween.get(this._swipeContainer).to({x:0, y:0}, this._swipeSpeed, createjs.Ease.bounceOut);
         this._currentScreen = "main";
     }
 
@@ -191,6 +188,10 @@ export class MenuScreen extends Screen {
                 if(this._currentScreen == "levelSelect")
                     this._onMain();
             }
+            else if((this._initialSwipePos.y - e.stageY) < -20) {
+                if(this._currentScreen == "fish")
+                    this._onMain();
+            }
         }
     }
 
@@ -205,7 +206,6 @@ export class MenuScreen extends Screen {
         this._swipeContainer.addChild(this._optionsContainer.Container);
         this._swipeContainer.addChild(this._clearedContainer.Container);
         this._swipeContainer.addChild(this._collectedContainer);
-        // this._swipeContainer.addChild(this._levelSelectContainer.Container);
 
         
         this._swipeContainer.addChild(this._levelSelectDisplay.Container);
@@ -222,6 +222,8 @@ export class MenuScreen extends Screen {
         (this._mainButtonsContainer.Sprites.btnLevelSelect as any).on("click", this._onLevelSelect, this);
         (this._mainButtonsContainer.Sprites.btnExit as any).on("click", this._onExit, this);
 
+        (this._fancyFish as any).on("click", this._onFish, this);
+
         Sprites.listenToClearData();
         (this._optionsContainer.Sprites.btnClearData as any).on(Sprites.CLEAR_DATA, this._onClearData, this);
 
@@ -232,6 +234,44 @@ export class MenuScreen extends Screen {
         // this._mainButtonsContainer.Sprites.btnOptions.on("click", () => console.log("HELLO I CLIC"));
 
         this._levelSelectDisplay.enable();
+
+        //testing -- add fakey collectible fish
+        //get any collected fish CLASS names
+        console.log("MY PROGRESS DATA AT NOw", ProgressManager.ProgressData)
+        const collFish = [].concat.apply([], ProgressManager.ProgressData.specials).filter(d => d != null && d.collected).map(d => d.unlocks);
+
+        
+        collFish.forEach(f => {
+            switch(f.toLowerCase()) {
+                case POOL.PERSEPHONE:
+                    this._collectibleFish.push(new Persephone(this._game));
+                    break;
+            }
+        });
+            
+        console.log(collFish);
+
+        //add the fish to the container
+        this._collectibleFish.forEach(f => {
+            f.setMainPage(true);
+            f.create(this._collectedContainer);
+            f.Speed = Math.random() * 3 + 3;
+        });
+
+        //if we don't have any collectible fish, hide the fish button
+        if(collFish.length <= 0) {
+            this._fancyFish.visible = false;
+        }
+        else {
+            this._fancyFish.visible = true;
+            this._fancyFish.alpha = 0;
+
+            createjs.Tween
+            .get(this._fancyFish)
+            .to({ alpha:1 }, 500, createjs.Ease.circIn);
+        }
+
+        console.log("SPECIAL FISHIES?", this._collectibleFish);
 
 
 
@@ -258,6 +298,8 @@ export class MenuScreen extends Screen {
         (this._mainButtonsContainer.Sprites.btnOptions as any).off("click", this._onOptions);
         (this._mainButtonsContainer.Sprites.btnLevelSelect as any).off("click", this._onLevelSelect);
         (this._mainButtonsContainer.Sprites.btnExit as any).off("click", this._onExit);
+
+        this._fancyFish.removeAllEventListeners();
 
         Sprites.stopListenToClearData();
         (this._optionsContainer.Sprites.btnClearData as any).off(Sprites.CLEAR_DATA, this._onClearData);
@@ -288,6 +330,10 @@ export class MenuScreen extends Screen {
         this._swipeContainer.y = 0;
 
         super.reset();
+    }
+
+    public update(gameTime:number) {
+        this._collectibleFish.forEach(f => f.update(gameTime));
     }
     /*--------------- GETTERS & SETTERS --------------*/
 }

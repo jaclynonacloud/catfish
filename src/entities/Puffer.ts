@@ -3,20 +3,19 @@ import { Entity } from "./Entity";
 import { LoadManager } from "../managers/LoadManager";
 import { IEnableable } from "../Interfaces";
 import { Logging } from "../Functions";
-import { GameScreen } from "../screens/GameScreen";
 import { Cat } from "./Cat";
 
 export class Puffer extends Entity implements IEnableable {
     public get Type() { return "Puffer"; }
-    
+
     private _speed:number;
     private _cooldown:number = 40;
     private _currentCooldown:number = 0;
 
     private _isCaught:boolean;
 
-    constructor(gameScreen:GameScreen) {
-        super(gameScreen, LoadManager.Spritesheets.Puffer_Spritesheet);
+    constructor(game:Game) {
+        super(game, LoadManager.Spritesheets.Puffer_Spritesheet);
         this._speed = 1;
 
         this._isCaught = false;

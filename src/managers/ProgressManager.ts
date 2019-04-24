@@ -50,7 +50,7 @@ export class ProgressManager {
         ProgressManager._readCookieData();
 
         //for TESTING
-        ProgressManager.unlockAll();
+        // ProgressManager.unlockAll();
     }
 
     /**Mark level as complete. Also saves data. */
@@ -118,7 +118,7 @@ export class ProgressManager {
     private static _readCookieData() {
         //look for cookie
         const cookie = ProgressManager._getCookie("progData");
-        if(cookie != null) {
+        if(cookie != null && cookie != '') {
             //read the cookie
             const data = JSON.parse(cookie);
             ProgressManager._levelsProgress = data.levels;

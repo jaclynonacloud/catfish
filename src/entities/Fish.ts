@@ -3,7 +3,6 @@ import { Entity } from "./Entity";
 import { LoadManager } from "../managers/LoadManager";
 import { IEnableable } from "../Interfaces";
 import { Logging } from "../Functions";
-import { GameScreen } from "../screens/GameScreen";
 
 export class Fish extends Entity implements IEnableable {
     private _speed:number;
@@ -12,8 +11,8 @@ export class Fish extends Entity implements IEnableable {
     private _isCaught:boolean;
     private _isReturning:boolean;
 
-    constructor(gameScreen:GameScreen, spritesheet?:createjs.SpriteSheet) {
-        super(gameScreen, spritesheet || LoadManager.Spritesheets.Peeper_Spritesheet);
+    constructor(game:Game, spritesheet?:createjs.SpriteSheet) {
+        super(game, spritesheet || LoadManager.Spritesheets.Peeper_Spritesheet);
         this._speed = 1;
 
         this._isCaught = false;
@@ -71,7 +70,8 @@ export class Fish extends Entity implements IEnableable {
 
         //move the fishy
         if(!this._isCaught)
-            this.X += this._speed * gameTime * this._direction.x;
+            // this.X += this._speed * gameTime * this._direction.x;
+            this.X += this._speed * this._direction.x;
         //--if returning, swim to natural y
         if(this._isReturning) {
             //if we are still far away, swim!
@@ -92,14 +92,12 @@ export class Fish extends Entity implements IEnableable {
             const hit = this.testStageBounds({x:0.5, y:0.5});
             switch(hit) {
                 case Entity.HIT.Right:
-                    this._direction.x *= -1;
-                    this._sprite.scaleX *= -1;
+                    this.DirectionX *= -1;
                     this.startIgnoreCollision();
                     this.X -= 5 - this.Bounds.Width;
                     break;
                 case Entity.HIT.Left:
-                    this._direction.x *= -1;
-                    this._sprite.scaleX *= -1;
+                    this.DirectionX *= -1;
                     this.startIgnoreCollision();
                     this.X += 5 - this.Bounds.Width;
                     break;

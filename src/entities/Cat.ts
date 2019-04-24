@@ -7,6 +7,7 @@ import { GameScreen } from "../screens/GameScreen";
 import { Fish } from "./Fish";
 
 export class Cat extends Entity implements IEnableable {
+    private _gameScreen:GameScreen;
     private _speed:number;
     private _fishCaughtMultiplier:number; //this will be the rate at which the cat slows down when rising per fish
 
@@ -18,9 +19,10 @@ export class Cat extends Entity implements IEnableable {
     private _isInjured:boolean;
     private _hasReachedSurface:boolean;
 
-    constructor(gameScreen:GameScreen) {
-        super(gameScreen, LoadManager.Spritesheets.Kitty_Spritesheet);
-        // super(gameScreen, LoadManager.Spritesheets.Cat_Spritesheet);
+    constructor(game:Game, gameScreen:GameScreen) {
+        super(game, LoadManager.Spritesheets.Kitty_Spritesheet);
+        this._gameScreen = gameScreen;
+        
         this._speed = 3;
         this._fishCaughtMultiplier = 0.05;
 
@@ -48,7 +50,7 @@ export class Cat extends Entity implements IEnableable {
     /***************/
     public grab() {
         //if the game is paused, we shall not grab
-        if(this.GameScreen.IsGamelogicPaused) return;
+        if(this._gameScreen.IsGamelogicPaused) return;
 
         //cannot grab if we are not at surface
         if(!this._hasReachedSurface) return;
@@ -57,13 +59,13 @@ export class Cat extends Entity implements IEnableable {
         this._hasReachedSurface = false;
 
         //move to x position
-        this.X = this.GameScreen.Game.Stage.mouseX;
+        this.X = this._gameScreen.Game.Stage.mouseX;
 
         //grab to y position
-        const speed = (this.GameScreen.Game.Stage.mouseY / 2) * this.Speed;
+        const speed = (this._gameScreen.Game.Stage.mouseY / 2) * this.Speed;
         this._catYTween = createjs.Tween
             .get(this._sprite)
-            .to({ y:this.GameScreen.Game.Stage.mouseY }, speed, createjs.Ease.circIn)
+            .to({ y:this._gameScreen.Game.Stage.mouseY }, speed, createjs.Ease.circIn)
             .call(() => {
                 //once the grab is done, turn off flag
                 this._isGrabbing = false;
@@ -76,7 +78,7 @@ export class Cat extends Entity implements IEnableable {
                 }, true);
 
                 //try to grab a fish
-                const fishes = this.GameScreen.tryToGrabFishes(this.X , this.Y);
+                const fishes = this._gameScreen.tryToGrabFishes(this.X , this.Y);
 
                 //see if a fish was grabbed
                 if(fishes.length > 0) this.caught(fishes);
@@ -171,7 +173,7 @@ export class Cat extends Entity implements IEnableable {
         //if we have a fish, send to main logic
         if(this._caughtFish != null) {
             this._caughtFish.forEach(f => {
-                this.GameScreen.collectFish(f);
+                this._gameScreen.collectFish(f);
             });
             this._caughtFish = [];
         }
@@ -187,7 +189,7 @@ export class Cat extends Entity implements IEnableable {
     /*--------------- OVERRIDES ----------------------*/
     update(gameTime:number) {
         //if our game logic is paused, no FISHING
-        if(this.GameScreen.IsGamelogicPaused) return;
+        if(this._gameScreen.IsGamelogicPaused) return;
 
         super.update(gameTime);
 
@@ -195,7 +197,7 @@ export class Cat extends Entity implements IEnableable {
         //if we are rising, attempt to catch more fish
         if(this._isRising && !this._isInjured) {
             //try to grab a fish
-            const fishes = this.GameScreen.tryToGrabFishes(this.X , this.Y);
+            const fishes = this._gameScreen.tryToGrabFishes(this.X , this.Y);
             //see if a fish was grabbed
             if(fishes.length > 0)
                 this.caught(fishes);
@@ -206,7 +208,7 @@ export class Cat extends Entity implements IEnableable {
             //don't test again if injured
             if(!this._isInjured) {
                 //test for puffer hit
-                const hasHitPuffer = this.GameScreen.hasHitAPuffer(this.X, this.Y);
+                const hasHitPuffer = this._gameScreen.hasHitAPuffer(this.X, this.Y);
                 if(hasHitPuffer) {
                     this.hitEnemy();
                     return;

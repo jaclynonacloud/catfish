@@ -46,14 +46,14 @@ export class GameScreen extends Screen {
         this._remainingFish = -1;
 
         //create object pool
-        ObjectPool.createPoolObject(new Cat(this), POOL.CAT)
+        ObjectPool.createPoolObject(new Cat(this._game, this), POOL.CAT)
         for(let i = 0; i < 120; i++) {
-            ObjectPool.createPoolObject(new Fish(this), POOL.FISH);
+            ObjectPool.createPoolObject(new Fish(this._game), POOL.FISH);
         }
         for(let i = 0; i < 30; i++) {
-            ObjectPool.createPoolObject(new Puffer(this), POOL.PUFFERFISH)
+            ObjectPool.createPoolObject(new Puffer(this._game), POOL.PUFFERFISH)
         }
-        ObjectPool.createPoolObject(new Persephone(this), POOL.PERSEPHONE);
+        ObjectPool.createPoolObject(new Persephone(this._game), POOL.PERSEPHONE);
 
 
         //pool out static kitty

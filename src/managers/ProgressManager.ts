@@ -61,8 +61,10 @@ export class ProgressManager {
             nextLevel.unlocked = true;
         }
         else {
-            const nextWorld = ProgressManager._levelsProgress[worldIndex+1][0];
-            if(nextWorld != null) nextWorld.unlocked = true;
+            if(worldIndex+1 < ProgressManager._levelsProgress.length-1) {
+                const nextWorld = ProgressManager._levelsProgress[worldIndex+1][0];
+                if(nextWorld != null) nextWorld.unlocked = true;
+            }
         }
 
         //save cookie data

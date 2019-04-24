@@ -7,6 +7,7 @@ import { Game } from "../Game";
 import { DataManager } from "../managers/DataManager";
 import { IntermediaryScreen } from "./IntermediaryScreen";
 import { Logging } from "../Functions";
+import { SoundManager } from "../managers/SoundManager";
 
 export class EndScreen extends Screen {
     private _game:Game;
@@ -57,10 +58,8 @@ export class EndScreen extends Screen {
     create(stage:createjs.StageGL):Screen {
         
         
-        // //for testing
-        // (this._container as any).on("click", (e) => {
-        //     ScreenManager.setCurrentScreen("menu", stage);
-        // }, this, true);       
+        //play the sound
+        // SoundManager.playSFX(LoadManager.Sounds.Wave, 0.6);
         
 
         return super.create(stage);

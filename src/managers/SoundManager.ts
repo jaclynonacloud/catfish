@@ -43,8 +43,9 @@ export class SoundManager {
     }
 
     /**Plays a sound effect. */
-    public static playSFX(src:string) {
+    public static playSFX(src:string, volume:number=1) {
         const sound = createjs.Sound.play(src);
+        sound.volume = volume;
         SoundManager._sfx.push(sound);
 
         //listen for the sound to finish -- remove from array

@@ -14,6 +14,8 @@ import { Special } from "../entities/specials/Special";
 import { Persephone } from "../entities/specials/Persephone";
 import { ProgressManager } from "../managers/ProgressManager";
 import { SoundManager } from "../managers/SoundManager";
+import { Owen } from "../entities/specials/Owen";
+import { Riley } from "../entities/specials/Riley";
 
 export class MenuScreen extends Screen {
     private _game:Game;
@@ -224,6 +226,8 @@ export class MenuScreen extends Screen {
         
         this._swipeContainer.addChild(this._levelSelectDisplay.Container);
 
+        this._fancyFish.visible = false;
+
         return super.create(stage);
     }
 
@@ -255,6 +259,12 @@ export class MenuScreen extends Screen {
             switch(f.toLowerCase()) {
                 case POOL.PERSEPHONE:
                     this._collectibleFish.push(new Persephone(this._game));
+                    break;
+                case POOL.OWEN:
+                    this._collectibleFish.push(new Owen(this._game));
+                    break;
+                case POOL.RILEY:
+                    this._collectibleFish.push(new Riley(this._game));
                     break;
             }
         });

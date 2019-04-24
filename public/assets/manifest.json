@@ -50,8 +50,8 @@
         "id":"Peeper_Spritesheet"
     },
     {
-        "src":"./assets/spritesheets/Persephone_Spritesheet.js",
-        "id":"Persephone_Spritesheet"
+        "src":"./assets/spritesheets/Specials_Spritesheet.js",
+        "id":"Specials_Spritesheet"
     },
     {
         "src":"./assets/spritesheets/Puffer_Spritesheet.js",
@@ -78,6 +78,18 @@
     {
         "src":"./assets/sounds/bubbles_fade.wav",
         "id":"BubblesFade"
+    },
+    {
+        "src":"./assets/sounds/fish_grab.wav",
+        "id":"FishGrab"
+    },
+    {
+        "src":"./assets/sounds/wave.wav",
+        "id":"Wave"
+    },
+    {
+        "src":"./assets/sounds/win.wav",
+        "id":"Win"
     },
     {
         "src":"./assets/sounds/music_1.wav",

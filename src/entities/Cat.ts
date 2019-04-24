@@ -5,6 +5,7 @@ import { IEnableable } from "../Interfaces";
 import { Logging } from "../Functions";
 import { GameScreen } from "../screens/GameScreen";
 import { Fish } from "./Fish";
+import { SoundManager } from "../managers/SoundManager";
 
 export class Cat extends Entity implements IEnableable {
     private _gameScreen:GameScreen;
@@ -125,6 +126,9 @@ export class Cat extends Entity implements IEnableable {
         });
 
         if(!hasNewFish) return;
+
+        //play the sound
+        SoundManager.playSFX(LoadManager.Sounds.FishGrab);
         
         //if we grabbed a fish...
         //go back up... slowly
@@ -169,7 +173,7 @@ export class Cat extends Entity implements IEnableable {
         this.drop();
 
         //play the sound
-        createjs.Sound.play(LoadManager.Sounds.CatInjure);
+        SoundManager.playSFX(LoadManager.Sounds.CatInjure);
     }
 
     public reachSurface() {

@@ -67,10 +67,12 @@
             { 
                 "name": "Owen!", 
                 "special":true,
+                "music": "Music6",
                 "unlocks":"Owen",
                 "data":[
                     { "id":"fish", "x":0, "y":0, "speed":3 },
-                    { "id":"fish", "x":100, "y":100, "speed":3 }
+                    { "id":"fish", "x":100, "y":100, "speed":3 },
+                    { "id":"owen", "x":230, "y":480, "speed":3 }
                 ]
             }
         ]

@@ -4,6 +4,8 @@ import { ScreenManager } from "../managers/ScreenManager";
 import { ObjectPool } from "../ObjectPool";
 import { Fish } from "../entities/Fish";
 import { Persephone } from "../entities/specials/Persephone";
+import { Owen } from "../entities/specials/Owen";
+import { Riley } from "../entities/specials/Riley";
 import { Puffer } from "../entities/Puffer";
 import { Cat } from "../entities/Cat";
 import { Game } from "../Game";
@@ -55,6 +57,8 @@ export class GameScreen extends Screen {
             ObjectPool.createPoolObject(new Puffer(this._game), POOL.PUFFERFISH)
         }
         ObjectPool.createPoolObject(new Persephone(this._game), POOL.PERSEPHONE);
+        ObjectPool.createPoolObject(new Owen(this._game), POOL.OWEN);
+        ObjectPool.createPoolObject(new Riley(this._game), POOL.RILEY);
 
 
         //pool out static kitty
@@ -144,6 +148,8 @@ export class GameScreen extends Screen {
             combos: 10,
             time: 100
         });
+
+        SoundManager.playSFX(LoadManager.Sounds.Win);
         
         //show win banner
         createjs.Tween.get(this._winContainer)
@@ -152,7 +158,7 @@ export class GameScreen extends Screen {
             .call(() => {
                 //transition to end screen
                 ScreenManager.setCurrentScreen("end", this._game.Stage);
-                SoundManager.fadeOutAmbience("ambience");
+                SoundManager.fadeOutAmbience("ambience", 200);
 
                 //save this data
                 const levelIndices = DataManager.getIndexData(this._game.CurrentLevelData);
@@ -224,6 +230,8 @@ export class GameScreen extends Screen {
                 const data = this._game.CurrentLevelData.data[i];
                 switch(data.id) {
                     case POOL.PERSEPHONE:
+                    case POOL.OWEN:
+                    case POOL.RILEY:
                     case POOL.FISH:
                         const fish = (ObjectPool.checkout(data.id) as Fish);
                         fish.create(this._fishContainer);
@@ -358,4 +366,6 @@ export class POOL {
     static get FISH() { return "fish"; }
     static get PUFFERFISH() { return "puffer"; }
     static get PERSEPHONE() { return "persephone"; }
+    static get OWEN() { return "owen"; }
+    static get RILEY() { return "riley"; }
 }

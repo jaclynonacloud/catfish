@@ -8,6 +8,7 @@ export interface LevelData {
     name:string;
     tutorials?:string[];
     background?:string;
+    music?:string;
     data:any[];
     duration?:number;
     showScore?:boolean;

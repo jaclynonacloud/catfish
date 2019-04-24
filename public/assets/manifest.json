@@ -68,11 +68,39 @@
 
 
     {
-        "src":"./assets/images/bg.png",
-        "id":"BG"
+        "src":"./assets/sounds/cat_injure.wav",
+        "id":"CatInjure"
     },
     {
-        "src":"./assets/images/bg-top.png",
-        "id":"BGTop"
+        "src":"./assets/sounds/btn_select.wav",
+        "id":"BTNSelect"
+    },
+    {
+        "src":"./assets/sounds/bubbles_fade.wav",
+        "id":"BubblesFade"
+    },
+    {
+        "src":"./assets/sounds/music_1.wav",
+        "id":"Music1"
+    },
+    {
+        "src":"./assets/sounds/music_2.wav",
+        "id":"Music2"
+    },
+    {
+        "src":"./assets/sounds/music_3.wav",
+        "id":"Music3"
+    },
+    {
+        "src":"./assets/sounds/music_4.wav",
+        "id":"Music4"
+    },
+    {
+        "src":"./assets/sounds/music_5.wav",
+        "id":"Music5"
+    },
+    {
+        "src":"./assets/sounds/music_6.wav",
+        "id":"Music6"
     }
 ]

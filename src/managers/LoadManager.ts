@@ -5,6 +5,7 @@ export class LoadManager {
 
     public static Spritesheets:{ [key:string]:createjs.SpriteSheet } = {};
     public static Images:{ [key:string]:createjs.Bitmap } = {};
+    public static Sounds:{ [key:string]:string } = {};
 
     private static _stage:createjs.StageGL;
     private static _preloadManager:createjs.LoadQueue;
@@ -112,6 +113,10 @@ export class LoadManager {
             case (createjs as any).Types.IMAGE: {
                 //build the bitmap
                 LoadManager.Images[e.item.id] = new createjs.Bitmap(e.item.src);
+            }
+            case (createjs as any).Types.SOUND: {
+                //build the sound
+                LoadManager.Sounds[e.item.id] = e.item.src;
             }
         }
 

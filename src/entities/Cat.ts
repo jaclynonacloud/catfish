@@ -22,7 +22,7 @@ export class Cat extends Entity implements IEnableable {
     constructor(game:Game, gameScreen:GameScreen) {
         super(game, LoadManager.Spritesheets.Kitty_Spritesheet);
         this._gameScreen = gameScreen;
-        
+
         this._speed = 3;
         this._fishCaughtMultiplier = 0.05;
 
@@ -167,6 +167,9 @@ export class Cat extends Entity implements IEnableable {
     public hitEnemy() {
         this.injure();
         this.drop();
+
+        //play the sound
+        createjs.Sound.play(LoadManager.Sounds.CatInjure);
     }
 
     public reachSurface() {

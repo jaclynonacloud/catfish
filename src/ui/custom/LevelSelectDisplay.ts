@@ -7,6 +7,7 @@ import { GameScreen } from "../../screens/GameScreen";
 import { DataManager } from "../../managers/DataManager";
 import { ScreenManager } from "../../managers/ScreenManager";
 import { IntermediaryScreen } from "../../screens/IntermediaryScreen";
+import { SoundManager } from "../../managers/SoundManager";
 
 
 export class LevelSelectDisplay implements IEnableable {
@@ -154,6 +155,9 @@ export class LevelSelectDisplay implements IEnableable {
         const data = DataManager.getLevelDataByIndex(index);
         if(data == null) return;
         if(!data.unlocked) return;
+
+        SoundManager.playSFX(LoadManager.Sounds.BubblesFade);
+        SoundManager.fadeOutAmbience("ambience");
 
         //make sure this level is UNLOCKED
         console.log("MY LEVEL DATA", data);

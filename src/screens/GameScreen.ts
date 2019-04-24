@@ -14,6 +14,7 @@ import { LevelData, DataManager } from "../managers/DataManager";
 import { LoadManager } from "../managers/LoadManager";
 import { GameScore } from "../ui/partials/GameScore";
 import { ProgressManager } from "../managers/ProgressManager";
+import { SoundManager } from "../managers/SoundManager";
 
 export class GameScreen extends Screen {
     private _game:Game;
@@ -153,7 +154,7 @@ export class GameScreen extends Screen {
             .call(() => {
                 //transition to end screen
                 ScreenManager.setCurrentScreen("end", this._game.Stage);
-                // ScreenManager.setCurrentScreen("menu", this._game.Stage);
+                SoundManager.fadeOutAmbience("ambience");
 
                 //save this data
                 const levelIndices = DataManager.getIndexData(this._game.CurrentLevelData);
@@ -261,6 +262,11 @@ export class GameScreen extends Screen {
         else {
             (this._staticContainer.Sprites["bg"] as createjs.Sprite).gotoAndStop("bg1");
         }
+
+        //get the level music!
+        let musicKey = "Music2";
+        if(this._game.CurrentLevelData.music) musicKey = this._game.CurrentLevelData.music;
+        SoundManager.playAmbienceWithFadeIn("ambience", LoadManager.Sounds[musicKey], true, 0.4, 400);
 
 
         //add the score

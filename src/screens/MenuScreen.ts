@@ -13,7 +13,7 @@ import { DataManager } from "../managers/DataManager";
 import { Special } from "../entities/specials/Special";
 import { Persephone } from "../entities/specials/Persephone";
 import { ProgressManager } from "../managers/ProgressManager";
-import { InstanceLoader } from "../Interfaces";
+import { SoundManager } from "../managers/SoundManager";
 
 export class MenuScreen extends Screen {
     private _game:Game;
@@ -115,6 +115,10 @@ export class MenuScreen extends Screen {
     /*--------------- ABSTRACTS ----------------------*/
     /*--------------- EVENTS -------------------------*/
     private _onNewGame() {
+        // SoundManager.stopAllSound();
+        SoundManager.fadeOutAmbience("ambience");
+        //play the sound
+        createjs.Sound.play(LoadManager.Sounds.BubblesFade);
         Logging.message("Go to new game!");
         
         const data = DataManager.getLevelDataByIndex(0);
@@ -130,22 +134,30 @@ export class MenuScreen extends Screen {
         });
     }
     private _onOptions() {
+        //play the sound
+        SoundManager.playSFX(LoadManager.Sounds.BTNSelect);
         //go to options!
         Logging.message("Go to options!");
         createjs.Tween.get(this._swipeContainer).to({x:this._game.StageWidth}, this._swipeSpeed, createjs.Ease.circOut);
         this._currentScreen = "options";
     }
     private _onLevelSelect() {
+        //play the sound
+        SoundManager.playSFX(LoadManager.Sounds.BTNSelect);
         Logging.message("Go to level select!");
         createjs.Tween.get(this._swipeContainer).to({x:-this._game.StageWidth}, this._swipeSpeed, createjs.Ease.circOut);
         this._currentScreen = "levelSelect";
     }
     private _onFish() {
+        //play the sound
+        SoundManager.playSFX(LoadManager.Sounds.BTNSelect);
         Logging.message("Go to fish!");
         createjs.Tween.get(this._swipeContainer).to({y:-this._game.StageHeight}, this._swipeSpeed, createjs.Ease.circOut);
         this._currentScreen = "fish";
     }
     private _onExit() {
+        //play the sound
+        SoundManager.playSFX(LoadManager.Sounds.BTNSelect);
         Logging.message("Go to exit!");
     }
 
@@ -197,6 +209,8 @@ export class MenuScreen extends Screen {
 
     /*--------------- OVERRIDES ----------------------*/
     public create(stage:createjs.StageGL):Screen {
+        //start music
+        SoundManager.playAmbienceWithFadeIn("ambience", LoadManager.Sounds.Music1, true, 1, 400);
 
         //add in the containers
         this._staticContainer.Sprites.bg.y = 0;

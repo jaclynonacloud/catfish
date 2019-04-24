@@ -61,6 +61,19 @@ export class DataManager {
         //get the next index
         return this.getLevelDataByIndex(index + 1);
     }
+
+    /**Gets the world and level index of the given level. */
+    public static getIndexData(levelData:LevelData) {
+        //test each world and look for us
+        for(let i = 0; i < DataManager._worldsData.worlds.length; i++) {
+            const world = DataManager._worldsData.worlds[i];
+            for(let n = 0; n < (world as any).length; n++) {
+                if(world[n] == levelData) return { world:i, level:n };
+            }            
+        }
+
+        return { world:-1, level:-1 };
+    }
     /*--------------- ABSTRACTS ----------------------*/
     /*--------------- EVENTS -------------------------*/
     /*--------------- OVERRIDES ----------------------*/

@@ -10,9 +10,10 @@ import { Game } from "../Game";
 import { Container } from "../ui/display/Container";
 import { Sprites } from "../ui/Sprites";
 import { Logging } from "../Functions";
-import { LevelData } from "../managers/DataManager";
+import { LevelData, DataManager } from "../managers/DataManager";
 import { LoadManager } from "../managers/LoadManager";
 import { GameScore } from "../ui/partials/GameScore";
+import { ProgressManager } from "../managers/ProgressManager";
 
 export class GameScreen extends Screen {
     private _game:Game;
@@ -153,6 +154,13 @@ export class GameScreen extends Screen {
                 //transition to end screen
                 ScreenManager.setCurrentScreen("end", this._game.Stage);
                 // ScreenManager.setCurrentScreen("menu", this._game.Stage);
+
+                //save this data
+                const levelIndices = DataManager.getIndexData(this._game.CurrentLevelData);
+                //mark level as complete
+                ProgressManager.completeLevel(levelIndices.world, levelIndices.level);
+                //try to mark special as collected
+                ProgressManager.collectSpecial(levelIndices.world, levelIndices.level);
 
                 //reset game data
                 this.reset();

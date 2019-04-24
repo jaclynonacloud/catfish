@@ -83,7 +83,7 @@ export class Game {
 
             //set the current screen
             //game test, load desired level patch -- if autoloading to game screen
-            this.changeCurrentLevel(DataManager.getLevelDataByIndex(4));
+            this.changeCurrentLevel(DataManager.getLevelDataByIndex(0));
 
             Logging.success("Level Data Loaded Successfully!");
 
@@ -97,8 +97,8 @@ export class Game {
             ScreenManager.registerScreen("intermediary", new IntermediaryScreen(this));
             
 
-            // ScreenManager.setCurrentScreen("menu", this._stage);
-            ScreenManager.setCurrentScreen("game", this._stage);
+            ScreenManager.setCurrentScreen("menu", this._stage);
+            // ScreenManager.setCurrentScreen("game", this._stage);
             // ScreenManager.setCurrentScreen("end", this._stage);
 
             //setup the game loop

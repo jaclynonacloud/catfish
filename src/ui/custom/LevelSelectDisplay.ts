@@ -43,9 +43,38 @@ export class LevelSelectDisplay implements IEnableable {
         this._levelTextContainer = new createjs.Container();
         this._container.addChild(this._levelTextContainer);
 
-        this.LevelText = "Hello World!";
+        this.LevelText = "";
 
 
+
+        this.rebuild();
+    }
+
+    /*--------------- METHODS ------------------------*/
+    public enable() {
+        this.rebuild();
+        this._levelButtons.forEach(btn => {
+            btn.on("click", this._onLevelClick, this);
+            btn.on("mouseover", this._onLevelHover, this);
+            btn.on("mouseout", this._onLevelUnhover, this);
+        });
+    }
+
+    public disable() {
+        this._levelButtons.forEach(btn => {
+            btn.removeAllEventListeners();
+        });
+    }
+
+    public rebuild() {
+        //rebuild all buttons
+        this._levelButtons.forEach(ch => {
+            this._container.removeChild(ch);
+            ch.removeAllEventListeners();
+            ch = null;
+        });
+        this._levelButtons = [];
+        this._levelsContainer.removeAllChildren();
 
         //build levels data
         this._levelsData = DataManager.WorldsData.worlds.map((world, i) => {
@@ -100,24 +129,9 @@ export class LevelSelectDisplay implements IEnableable {
             }
         };
 
-        this._levelsContainer.x = (game.StageWidth / 2) - (this._levelsContainer.getBounds().width / 2);
+        this._levelsContainer.x = (this._game.StageWidth / 2) - (this._levelsContainer.getBounds().width / 2);
         this._levelsContainer.y = 100;
         this._container.addChild(this._levelsContainer);
-    }
-
-    /*--------------- METHODS ------------------------*/
-    public enable() {
-        this._levelButtons.forEach(btn => {
-            btn.on("click", this._onLevelClick, this);
-            btn.on("mouseover", this._onLevelHover, this);
-            btn.on("mouseout", this._onLevelUnhover, this);
-        });
-    }
-
-    public disable() {
-        this._levelButtons.forEach(btn => {
-            btn.removeAllEventListeners();
-        });
     }
 
 

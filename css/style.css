@@ -9,3 +9,8 @@ body {
     margin: 0;
     overflow: hidden;
 }
+
+
+canvas {
+    max-height: 100vh;
+}

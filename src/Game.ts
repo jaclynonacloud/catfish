@@ -87,12 +87,14 @@ export class Game {
             ScreenManager.registerScreen("intermediary", new IntermediaryScreen(this));
             
 
-            ScreenManager.setCurrentScreen("game", this._stage);
+            ScreenManager.setCurrentScreen("menu", this._stage);
             // ScreenManager.setCurrentScreen("end", this._stage);
 
             //setup the game loop
             createjs.Ticker.framerate = Game.FRAME_RATE;
             createjs.Ticker.on("tick", this.update, this);
+
+            res();
 
         });
     }
@@ -107,6 +109,22 @@ export class Game {
     public changeCurrentScore(currentScore:ICurrentScore) {
         this._currentScore = currentScore;
     }
+
+
+
+    //recursive sizing
+    private _scaleChildren(children) {
+
+
+        if(children != null) {
+            for(let i = 0; i < children.length; i++) {
+                const ch = children[i];
+                ch.scaleX = ch.scaleY = this._scaling;
+                if(ch.children != null && ch.scaleX != null) this._scaleChildren(ch);
+            }
+        }
+
+    }
     /*--------------- ABSTRACTS ----------------------*/
     /*--------------- EVENTS -------------------------*/
     public update(e:any) {
@@ -117,14 +135,22 @@ export class Game {
         //update the screen
         if(ScreenManager.CurrentScreen != null) ScreenManager.CurrentScreen.update(gameTime);
 
+        //scale all children
+        // this._scaleChildren(this._stage.children);
+
         //update the stage
         this._stage.update();
     }
+
+
     /*--------------- OVERRIDES ----------------------*/
     /*--------------- GETTERS & SETTERS --------------*/
     public static get FRAME_RATE() { return 30; }
-    public static get WIDTH() { return Game.HEIGHT * 0.5625; } //desired size
-    public static get HEIGHT() { return Math.min(document.body.clientHeight, 1024); }
+    // public static get WIDTH() { return Game.HEIGHT * 0.5625; } //desired size
+    // public static get HEIGHT() { return Math.min(document.body.clientHeight, 1024); }
+
+    public static get WIDTH() { return 576; }
+    public static get HEIGHT() { return 1024; }
 
     public get StageWidth() { return this._canvas.width; } //actual size
     public get StageHeight() { return this._canvas.height; }

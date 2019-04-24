@@ -6,6 +6,8 @@ export interface WorldsData {
 
 export interface LevelData {
     name:string;
+    tutorials?:string[];
+    background?:string;
     data:any[];
     duration?:number;
     showScore?:boolean;

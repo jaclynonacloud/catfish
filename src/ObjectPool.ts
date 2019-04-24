@@ -42,6 +42,13 @@ export class ObjectPool {
         return false;
     }
 
+    /**Returns all objects to pool. */
+    public static releaseAllObjects() {
+        ObjectPool._pool.forEach(p => {
+            ObjectPool.return(p.obj);
+        });
+    }
+
 
     public static _getObjectByType(type) {
         const poolObj = ObjectPool._pool.find((o => o.type == type && !o.active));

@@ -12,8 +12,8 @@ export class Fish extends Entity implements IEnableable {
     private _isCaught:boolean;
     private _isReturning:boolean;
 
-    constructor(gameScreen:GameScreen) {
-        super(gameScreen, LoadManager.Spritesheets.Peeper_Spritesheet);
+    constructor(gameScreen:GameScreen, spritesheet?:createjs.SpriteSheet) {
+        super(gameScreen, spritesheet || LoadManager.Spritesheets.Peeper_Spritesheet);
         this._speed = 1;
 
         this._isCaught = false;

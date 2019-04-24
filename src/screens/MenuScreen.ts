@@ -110,6 +110,7 @@ export class MenuScreen extends Screen {
         Logging.message("Go to new game!");
         
         const data = DataManager.getLevelDataByIndex(0);
+        this._game.changeCurrentLevel(data);
         
         const intermediary = ScreenManager.getScreenByKey("intermediary") as IntermediaryScreen;
         new Promise(async(res) => {

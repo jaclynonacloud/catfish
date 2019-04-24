@@ -1,7 +1,9 @@
+import { TutorialCreator } from "./TutorialCreator";
 import { Screen } from "./Screen";
 import { ScreenManager } from "../managers/ScreenManager";
 import { ObjectPool } from "../ObjectPool";
 import { Fish } from "../entities/Fish";
+import { Persephone } from "../entities/specials/Persephone";
 import { Puffer } from "../entities/Puffer";
 import { Cat } from "../entities/Cat";
 import { Game } from "../Game";
@@ -25,12 +27,15 @@ export class GameScreen extends Screen {
     private _winText:createjs.BitmapText;
 
     private _gameScore:GameScore;
+    private _tutorialCreator:TutorialCreator;
 
     private _cat:Cat;
     private _fishes:Fish[];
     private _puffers:Puffer[];
 
     private _remainingFish:number;
+
+    private _pauseLogic:Boolean;
     
     constructor(game:Game) {
         super();
@@ -47,10 +52,13 @@ export class GameScreen extends Screen {
         for(let i = 0; i < 30; i++) {
             ObjectPool.createPoolObject(new Puffer(this), POOL.PUFFERFISH)
         }
+        ObjectPool.createPoolObject(new Persephone(this), POOL.PERSEPHONE);
 
 
         //pool out static kitty
         this._cat = (ObjectPool.checkout(POOL.CAT) as Cat);
+        this._cat.X = 290;
+        this._cat.Y = 70;
 
         //create containers
         this._staticContainer = new Container();
@@ -64,6 +72,9 @@ export class GameScreen extends Screen {
         this._winContainer = new createjs.Container();
 
         this._gameScore = new GameScore(this._game);
+        this._tutorialCreator = new TutorialCreator(this._game, this);
+
+        this._pauseLogic = false;
     }
 
     /*--------------- METHODS ------------------------*/
@@ -148,6 +159,14 @@ export class GameScreen extends Screen {
             });
     }
 
+    public pauseGameLogic() {
+        this._pauseLogic = true;
+    }
+
+    public unpauseGameLogic() {
+        this._pauseLogic = false;
+    }
+
     /*--------------- ABSTRACTS ----------------------*/
     /*--------------- EVENTS -------------------------*/
     /*--------------- OVERRIDES ----------------------*/
@@ -196,7 +215,8 @@ export class GameScreen extends Screen {
                 const data = this._game.CurrentLevelData.data[i];
                 switch(data.id) {
                     case POOL.FISH:
-                        const fish = (ObjectPool.checkout(POOL.FISH) as Fish);
+                    case POOL.PERSEPHONE:
+                        const fish = (ObjectPool.checkout(data.id) as Fish);
                         fish.create(this._fishContainer);
                         if(data.speed != null) fish.Speed = data.speed; //set variables
                         if(data.x != null) fish.X = data.x * this._game.Scaling;
@@ -221,11 +241,23 @@ export class GameScreen extends Screen {
             //set fish total
             this._remainingFish = this._fishes.length;
         }
+        //get the level tutorials
+        if(this._game.CurrentLevelData.tutorials != null) {
+            this._tutorialCreator.queueTutorials(this._game.CurrentLevelData.tutorials);
+        }
+        //get the level background
+        if(this._game.CurrentLevelData.background != null) {
+            (this._staticContainer.Sprites["bg"] as createjs.Sprite).gotoAndStop(this._game.CurrentLevelData.background);
+        }
+        else {
+            (this._staticContainer.Sprites["bg"] as createjs.Sprite).gotoAndStop("bg1");
+        }
 
 
         //add the score
-        this._gameScore.Container.y = this._game.StageHeight - 40;
-        this._container.addChild(this._gameScore.Container);
+        // this._gameScore.Container.y = this._game.StageHeight - 40;
+        // this._container.addChild(this._gameScore.Container);
+
 
         //update the game HUD for this round
         const levelData = this._game.CurrentLevelData;
@@ -249,6 +281,8 @@ export class GameScreen extends Screen {
             ObjectPool.return(f);
         });
 
+        ObjectPool.releaseAllObjects();
+
         this._fishContainer.removeAllChildren();
         this._pufferContainer.removeAllChildren();
 
@@ -258,6 +292,9 @@ export class GameScreen extends Screen {
     }
 
     public update(gameTime:number) {
+        //if our logic is paused, do not do game loop
+        if(this._pauseLogic) return;
+
         const normalizedTime = Math.min(1, gameTime) + 0.5;
 
         //update entities
@@ -291,10 +328,15 @@ export class GameScreen extends Screen {
         this._fishes = [];
         this._puffers = [];
 
+        this._cat.X = 290;
+
         super.reset();
     }
     /*--------------- GETTERS & SETTERS --------------*/
     public get Game() { return this._game; }
+    public get Cat() { return this._cat; }
+    public get Fishes() { return this._fishes; }
+    public get IsGamelogicPaused() { return this._pauseLogic; }
 }
 
 
@@ -303,4 +345,5 @@ export class POOL {
     static get CAT() { return "cat"; }
     static get FISH() { return "fish"; }
     static get PUFFERFISH() { return "puffer"; }
+    static get PERSEPHONE() { return "persephone"; }
 }

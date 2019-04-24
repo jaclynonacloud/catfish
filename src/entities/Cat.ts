@@ -47,6 +47,9 @@ export class Cat extends Entity implements IEnableable {
     /*   ACTIONS   */
     /***************/
     public grab() {
+        //if the game is paused, we shall not grab
+        if(this.GameScreen.IsGamelogicPaused) return;
+
         //cannot grab if we are not at surface
         if(!this._hasReachedSurface) return;
 
@@ -191,6 +194,9 @@ export class Cat extends Entity implements IEnableable {
     /*--------------- EVENTS -------------------------*/
     /*--------------- OVERRIDES ----------------------*/
     update(gameTime:number) {
+        //if our game logic is paused, no FISHING
+        if(this.GameScreen.IsGamelogicPaused) return;
+
         super.update(gameTime);
 
 

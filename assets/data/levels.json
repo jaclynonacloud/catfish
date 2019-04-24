@@ -5,7 +5,7 @@
                 "name": "Welcome to the pond!", 
                 "tutorials": ["first"],
                 "data":[
-                    { "id":"fish", "x":250, "y":580, "speed":2 }
+                    { "id":"fish", "x":225, "y":540, "speed":2 }
                 ] 
             },
             { 
@@ -29,7 +29,7 @@
                 "data":[
                     { "id":"fish", "x":0, "y":0, "speed":4 },
                     { "id":"puffer", "x":100, "y":100, "speed":3.5 },
-                    { "id":"persephone", "x":270, "y":560, "speed":3 }
+                    { "id":"persephone", "x":230, "y":480, "speed":3 }
                 ]
             }
         ],
@@ -43,7 +43,7 @@
                     { "id":"fish", "x":50, "y":300, "speed":4 },
                     { "id":"fish", "x":250, "y":600, "speed":4.5, "flip":true },
                     { "id":"fish", "x":120, "y":750, "speed":3.5, "flip":false },
-                    { "id":"puffer", "x":380, "y":300, "speed":3, "flip":false }
+                    { "id":"puffer", "x":390, "y":310, "speed":3, "flip":false }
                 ]
             },
             { 

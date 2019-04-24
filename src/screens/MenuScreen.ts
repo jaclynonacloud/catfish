@@ -10,6 +10,8 @@ import { LevelSelectDisplay } from "../ui/custom/LevelSelectDisplay";
 import { IntermediaryScreen } from "./IntermediaryScreen";
 import { GameScreen } from "./GameScreen";
 import { DataManager } from "../managers/DataManager";
+import { Special } from "../entities/specials/Special";
+import { Persephone } from "../entities/specials/Persephone";
 
 export class MenuScreen extends Screen {
     private _game:Game;
@@ -20,6 +22,7 @@ export class MenuScreen extends Screen {
     private _mainContainer:createjs.Container;
     private _clearedContainer:Container;
     private _optionsContainer:Container;
+    private _collectedContainer:createjs.Container;
 
     private _mainButtonsContainer:Container;
     private _logo:createjs.DisplayObject;
@@ -33,6 +36,9 @@ export class MenuScreen extends Screen {
     private _currentScreen:string;
     private _initialSwipePos:{x:number, y:number};
     private _dragTimer:any;
+
+    //collectibles
+    private _collectibleFish:Special[];
 
     
     constructor(game:Game) {
@@ -95,11 +101,21 @@ export class MenuScreen extends Screen {
         this._levelSelectDisplay = new LevelSelectDisplay(game);
         this._levelSelectDisplay.Container.x += this._game.StageWidth;
 
+        //setup collected container
+        this._collectedContainer = new createjs.Container;
+
 
         //setup properties
         this._swipeSpeed = 800;
         this._currentScreen = "main";
         this._initialSwipePos = { x:-1, y:-1 };
+
+
+        //testing -- add fakey collectible fish
+        this._collectibleFish = [
+            new Persephone(ScreenManager.getScreenByKey("game") as GameScreen)
+        ];
+        
 
     }
 
@@ -188,6 +204,7 @@ export class MenuScreen extends Screen {
         this._swipeContainer.addChild(this._mainContainer);
         this._swipeContainer.addChild(this._optionsContainer.Container);
         this._swipeContainer.addChild(this._clearedContainer.Container);
+        this._swipeContainer.addChild(this._collectedContainer);
         // this._swipeContainer.addChild(this._levelSelectContainer.Container);
 
         

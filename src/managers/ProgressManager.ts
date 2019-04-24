@@ -1,4 +1,5 @@
 import { WorldsData, LevelData } from "./DataManager";
+import { Logging } from "../Functions";
 
 export interface IProgressLevel {
     unlocked: boolean;
@@ -47,6 +48,9 @@ export class ProgressManager {
 
         //read cookie data
         ProgressManager._readCookieData();
+
+        //for TESTING
+        ProgressManager.unlockAll();
     }
 
     /**Mark level as complete. Also saves data. */
@@ -69,6 +73,27 @@ export class ProgressManager {
 
         //save cookie data
         ProgressManager.saveCookieData();
+    }
+
+    /**Well look at you, you dirty little cheater. :) */
+    public static unlockAll() {
+
+        Logging.message("You're a dirty little cheater!");
+
+        ProgressManager._levelsProgress = ProgressManager._worldsData.worlds.map(world => {
+            return [].concat.apply([], world as any)
+                .map(level => {
+                    return { unlocked: true, completed: false };
+                });
+        });
+        ProgressManager._specialsProgress = ProgressManager._worldsData.worlds.map(world => {
+            return [].concat.apply([], world as any)
+                .map(level => {
+                    if(level.special) return { collected: true, unlocks:level.unlocks };
+                    return null;
+                });
+        });
+
     }
 
     /**Mark special as collected.  Also saves data. */

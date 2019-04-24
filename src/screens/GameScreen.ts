@@ -217,7 +217,7 @@ export class GameScreen extends Screen {
 
 
         //add level data if it exists
-        this.reset();
+        // this.reset();
         // this.destroy();
         if(this._game.CurrentLevelData != null) {
             //load in critters

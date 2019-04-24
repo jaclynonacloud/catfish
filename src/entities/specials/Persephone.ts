@@ -1,8 +1,8 @@
 import { LoadManager } from "../../managers/LoadManager";
-import { Fish } from "../Fish";
+import { Special } from "./Special";
 import { GameScreen } from "../../screens/GameScreen";
 
-export class Persephone extends Fish {
+export class Persephone extends Special {
 
     constructor(gameScreen:GameScreen) {
         super(gameScreen, LoadManager.Spritesheets.Persephone_Spritesheet);

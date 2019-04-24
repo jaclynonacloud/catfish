@@ -149,8 +149,13 @@ export class LevelSelectDisplay implements IEnableable {
 
         if(index == -1) return;
 
+        
         //set the level index
         const data = DataManager.getLevelDataByIndex(index);
+        if(data == null) return;
+        if(!data.unlocked) return;
+
+        //make sure this level is UNLOCKED
         console.log("MY LEVEL DATA", data);
         this._game.changeCurrentLevel(data);
         //go to intermediary screen

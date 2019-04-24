@@ -51,9 +51,17 @@ export class Game {
 
             console.log(this._stage, this._canvas);
 
+            //load the splash screen
+            ScreenManager.registerScreen("splash", new SplashScreen(this));
+            ScreenManager.setCurrentScreen("splash", this._stage);
+
+            const splash = ScreenManager.getScreenByKey("splash") as SplashScreen;
+
             //listen to asset updates
             (this._stage as any).addEventListener(LoadManager.ASSETS_UPDATED, (e) => {
                 console.log(LoadManager.Percentage);
+                //update percent
+                splash.Text = Math.ceil(LoadManager.Percentage * 100).toString();
             });
             //load assets
             await LoadManager.loadAssets("assets/manifest.json", this._stage)
@@ -80,14 +88,14 @@ export class Game {
             await Sprites.setup();
 
             //build the screens
-            ScreenManager.registerScreen("splash", new SplashScreen());
             ScreenManager.registerScreen("menu", new MenuScreen(this));
             ScreenManager.registerScreen("game", new GameScreen(this));
             ScreenManager.registerScreen("end", new EndScreen(this));
             ScreenManager.registerScreen("intermediary", new IntermediaryScreen(this));
             
 
-            ScreenManager.setCurrentScreen("menu", this._stage);
+            // ScreenManager.setCurrentScreen("menu", this._stage);
+            ScreenManager.setCurrentScreen("game", this._stage);
             // ScreenManager.setCurrentScreen("end", this._stage);
 
             //setup the game loop

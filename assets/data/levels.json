@@ -26,9 +26,11 @@
                 "name": "Persephone!", 
                 "tutorials": ["special"],
                 "special":true,
+                "unlocks":"Persephone",
                 "data":[
                     { "id":"fish", "x":0, "y":0, "speed":4 },
-                    { "id":"puffer", "x":100, "y":100, "speed":3.5 },
+                    { "id":"fish", "x":100, "y":100, "speed":3.5 },
+                    { "id":"fish", "x":280, "y":300, "speed":3.5, "flip":true },
                     { "id":"persephone", "x":230, "y":480, "speed":3 }
                 ]
             }
@@ -63,6 +65,7 @@
             { 
                 "name": "Owen!", 
                 "special":true,
+                "unlocks":"Owen",
                 "data":[
                     { "id":"fish", "x":0, "y":0, "speed":3 },
                     { "id":"fish", "x":100, "y":100, "speed":3 }

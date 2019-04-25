@@ -65,6 +65,10 @@
         "src":"./assets/spritesheets/Tutorial_Spritesheet.js",
         "id":"Tutorial_Spritesheet"
     },
+    {
+        "src":"./assets/spritesheets/Menu_Spritesheet.js",
+        "id":"Menu_Spritesheet"
+    },
 
 
     {

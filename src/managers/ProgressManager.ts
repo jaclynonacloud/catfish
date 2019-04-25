@@ -22,29 +22,11 @@ export class ProgressManager {
     /**Loads in the worlds data so it can parse the progress data. */
     public static loadWorldsData(worldsData:WorldsData) {
         ProgressManager._worldsData = worldsData;
-
-        ProgressManager._levelsProgress = worldsData.worlds.map(world => {
-            return [].concat.apply([], world as any)
-                .map(level => {
-                    return { unlocked: false, completed: false };
-                });
-        });
-        ProgressManager._specialsProgress = worldsData.worlds.map(world => {
-            return [].concat.apply([], world as any)
-                .map(level => {
-                    if(level.special) return { collected: false, unlocks:level.unlocks };
-                    return null;
-                });
-        });
-
-        //unlock level 1
-        ProgressManager._levelsProgress[0][0].unlocked = true;
+        //does resetting just use it
+        ProgressManager.killAll();
 
         //read cookie data
         ProgressManager._readCookieData();
-
-        //for TESTING
-        // ProgressManager.unlockAll();
     }
 
     /**Mark level as complete. Also saves data. */
@@ -92,6 +74,29 @@ export class ProgressManager {
 
     }
 
+    public static killAll() {
+        Logging.message("You've reset all the data!");
+
+
+        ProgressManager._levelsProgress = ProgressManager._worldsData.worlds.map(world => {
+            return [].concat.apply([], world as any)
+                .map(level => {
+                    return { unlocked: false, completed: false };
+                });
+        });
+        ProgressManager._specialsProgress = ProgressManager._worldsData.worlds.map(world => {
+            return [].concat.apply([], world as any)
+                .map(level => {
+                    if(level.special) return { collected: false, unlocks:level.unlocks };
+                    return null;
+                });
+        });
+
+        //unlock level 1
+        ProgressManager._levelsProgress[0][0].unlocked = true;
+
+    }
+
     /**Mark special as collected.  Also saves data. */
     public static collectSpecial(worldIndex:number, levelIndex:number) {
         //set to collected!
@@ -107,6 +112,11 @@ export class ProgressManager {
     public static saveCookieData() {
 
         document.cookie = `progData=${JSON.stringify(ProgressManager.ProgressData)};path=/`;
+    }
+
+    /**Kills the saved progress data. */
+    public static deleteCookieData() {
+        document.cookie = 'progData=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     }
 
     /**Reads cookie data and fills in progress data. */

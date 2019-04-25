@@ -19,10 +19,7 @@ export abstract class Special extends Fish {
     public setMainPage(isOnMainPage) {
         this._isOnMainPage = isOnMainPage;
         //randomly place on the page
-        this.X = Math.floor(Math.random() * (576 - this.Sprite.getBounds().width));
-        this.Y = Math.floor(Math.random() * (1024 - this.Sprite.getBounds().height));
-        // this.X = Math.floor(Math.random() * (window.innerWidth - this.Sprite.getBounds().width));
-        // this.Y = Math.floor(Math.random() * (window.innerHeight - this.Sprite.getBounds().height));
+        this._resetAttentionSpan();
 
         //set reg to center
         this.Sprite.regX = this.Sprite.getBounds().width / 2;
@@ -30,8 +27,8 @@ export abstract class Special extends Fish {
 
     private _resetAttentionSpan() {
         this._attnSpanDuration = Math.random() * 100 + 100;
-        this._desiredX = Math.floor(Math.random() * (576 - this.Sprite.getBounds().width));
-        this._desiredY = Math.floor(Math.random() * (1024 - this.Sprite.getBounds().height));
+        this._desiredX = Math.floor(Math.random() * this.Game.StageWidth);
+        this._desiredY = Math.floor(Math.random() * this.Game.StageHeight);
         // this._desiredX = Math.floor(Math.random() * (window.innerWidth - this.Sprite.getBounds().width));
         // this._desiredY = Math.floor(Math.random() * (window.innerHeight - this.Sprite.getBounds().height));
 

@@ -28,16 +28,10 @@ export class LevelSelectDisplay implements IEnableable {
 
         //build the required components for the level select display
         this._container = new createjs.Container();
-        this._background = Sprites.Backgrounds.LevelSelectBG as createjs.Sprite;
-        this._background.x = (game.StageWidth / 2) - (this._background.getBounds().width / 2);
-        this._background.y = 80;
+        this._background = new createjs.Sprite(LoadManager.Spritesheets.Menu_Spritesheet, "bgLevelSelect");
 
         this._levelsContainer = new createjs.Container();
         this._container.addChild(this._background);
-        let text = Sprites.generateBitmapText("Level Select", LoadManager.Spritesheets.Typography);
-        text.x = (game.StageWidth / 2) - (text.getBounds().width / 2);
-        text.y = 30;
-        this._container.addChild(text);
 
 
         //setup display text
@@ -99,12 +93,11 @@ export class LevelSelectDisplay implements IEnableable {
             for(let i = 0; i < this._levelsData[r].length; i++) {
                 const levelData = this._levelsData[r][i];
                 //decide the sprite
-                let sprite = Sprites.Buttons.LevelEmpty.clone();
-                if(levelData.special != null && levelData.special) sprite = Sprites.Buttons.LevelSpecialEmpty.clone();
+                let sprite = new createjs.Sprite(LoadManager.Spritesheets.Menu_Spritesheet, "btnLvlEmpty")
+                if(levelData.special != null && levelData.special) sprite.gotoAndPlay("btnLvlSpecial")
                 // //completed
-                if(levelData.completed) {
-                    sprite = Sprites.Buttons.LevelComplete.clone();
-                    if(levelData.special != null && levelData.special) sprite = Sprites.Buttons.LevelSpecialComplete.clone();
+                if(levelData.completed && (levelData.special == null || !levelData.special)) {
+                    sprite.gotoAndPlay("btnLvlComplete")
                 }
                 //locked
                 if(!levelData.unlocked) {
@@ -117,8 +110,18 @@ export class LevelSelectDisplay implements IEnableable {
                 }
 
                 //place
-                sprite.x = 60 * i;
-                sprite.y = 50 * r;
+                sprite.x = 100 * i;
+                sprite.y = 90 * r;
+
+                //add world tint
+                // const step = (360 / this._levelsData.length) * r;
+                // var matrix = new createjs.ColorMatrix().adjustHue(step - 180).adjustSaturation(-50);
+                // sprite.filters = [
+                //     new createjs.ColorMatrixFilter(matrix)
+                // ];
+
+                // sprite.cache(0, 0, sprite.getBounds().width, sprite.getBounds().height);
+
                 //add
                 this._levelsContainer.addChild(sprite);
                 //to array
@@ -127,7 +130,7 @@ export class LevelSelectDisplay implements IEnableable {
         };
 
         this._levelsContainer.x = (this._game.StageWidth / 2) - (this._levelsContainer.getBounds().width / 2);
-        this._levelsContainer.y = 100;
+        this._levelsContainer.y = 210;
         this._container.addChild(this._levelsContainer);
     }
 

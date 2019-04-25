@@ -25,12 +25,21 @@ export class MenuScreen extends Screen {
     // private _mainContainer:Container;
     private _mainContainer:createjs.Container;
     private _clearedContainer:Container;
-    private _optionsContainer:Container;
+    // private _optionsContainer:Container;
+    private _optionsContainer:createjs.Container;
     private _collectedContainer:createjs.Container;
 
     private _mainButtonsContainer:Container;
     private _logo:createjs.DisplayObject;
     private _fancyFish:createjs.Sprite;
+
+    private _btnResetData:createjs.Sprite;
+    private _btnCheat:createjs.Sprite;
+    private _soundOn:createjs.Sprite;
+    private _soundOff:createjs.Sprite;
+    private _btnLeft:createjs.Sprite;
+    private _btnRight:createjs.Sprite;
+    private _btnUp:createjs.Sprite;
 
     //custom containers
     private _levelSelectDisplay:LevelSelectDisplay;
@@ -69,10 +78,10 @@ export class MenuScreen extends Screen {
         this._mainContainer.addChild(this._logo);
         this._mainButtonsContainer = new Container(Container.LAYOUT_OPTIONS.ColumnLeftBottom);
         this._mainButtonsContainer.addMany({
-            btnNewGame : new createjs.Sprite(LoadManager.Spritesheets.Catfish_Main, "btnNewGame"),
-            btnOptions : new createjs.Sprite(LoadManager.Spritesheets.Catfish_Main, "btnOptions"),
-            btnLevelSelect : new createjs.Sprite(LoadManager.Spritesheets.Catfish_Main, "btnLevelSelect"),
-            btnExit : new createjs.Sprite(LoadManager.Spritesheets.Catfish_Main, "btnExit"),
+            btnNewGame : new createjs.Sprite(LoadManager.Spritesheets.Menu_Spritesheet, "btnNewGame"),
+            btnOptions : new createjs.Sprite(LoadManager.Spritesheets.Menu_Spritesheet, "btnOptions"),
+            btnLevelSelect : new createjs.Sprite(LoadManager.Spritesheets.Menu_Spritesheet, "btnLevelSelect"),
+            btnExit : new createjs.Sprite(LoadManager.Spritesheets.Menu_Spritesheet, "btnExit"),
         });
         this._mainContainer.addChild(this._mainButtonsContainer.Container);
         this._fancyFish = new createjs.Sprite(LoadManager.Spritesheets.Catfish_Main, "fancyFish");
@@ -82,12 +91,21 @@ export class MenuScreen extends Screen {
         this._fancyFish.visible = false;
 
         //setup options container
-        this._optionsContainer = new Container();
-        this._optionsContainer.addMany({
-            txtOptions : Sprites.generateBitmapText("Options", LoadManager.Spritesheets.Typography),
-            btnClearData : Sprites.Buttons.ClearData
-        });
-        this._optionsContainer.Container.x -= this._game.StageWidth;
+        this._optionsContainer = new createjs.Container();
+        const optionsBG = new createjs.Sprite(LoadManager.Spritesheets.Menu_Spritesheet, "bgOptions");
+        this._btnResetData = new createjs.Sprite(LoadManager.Spritesheets.Menu_Spritesheet, "btnResetData");
+        this._btnCheat = new createjs.Sprite(LoadManager.Spritesheets.Menu_Spritesheet, "btnCheat");
+        this._soundOn = new createjs.Sprite(LoadManager.Spritesheets.Menu_Spritesheet, "btnOn");
+        this._soundOff = new createjs.Sprite(LoadManager.Spritesheets.Menu_Spritesheet, "btnOff");
+        this._soundOn.x = this._soundOff.x = 240;
+        this._soundOn.y = this._soundOff.y = 240;
+        this._soundOff.x += 130;
+
+        this._optionsContainer.addChild(
+            optionsBG, this._btnResetData, this._btnCheat, this._soundOff, this._soundOn
+        );
+
+        this._optionsContainer.x -= this._game.StageWidth;
 
         //setup cleared container
         this._clearedContainer = new Container();
@@ -106,6 +124,21 @@ export class MenuScreen extends Screen {
         this._collectibleFish = [];
 
 
+        //setup arrow btns
+        this._btnUp = new createjs.Sprite(LoadManager.Spritesheets.Menu_Spritesheet, "btnUp");
+        this._btnLeft = new createjs.Sprite(LoadManager.Spritesheets.Menu_Spritesheet, "btnLeft");
+        this._btnRight = new createjs.Sprite(LoadManager.Spritesheets.Menu_Spritesheet, "btnRight");
+        this._btnUp.x = (this._game.StageWidth / 2) - this._btnUp.getBounds().width / 2;
+        this._btnUp.y = this._game.StageHeight + 10;
+        this._btnLeft.y = this._btnRight.y = 250;
+        this._btnLeft.x = (this._game.StageWidth) + 10;
+        this._btnRight.x -= this._btnRight.getBounds().width + 10;
+
+        this._swipeContainer.addChild(
+            this._btnUp, this._btnLeft, this._btnRight
+        );
+
+
         //setup properties
         this._swipeSpeed = 800;
         this._currentScreen = "main";
@@ -120,7 +153,7 @@ export class MenuScreen extends Screen {
         // SoundManager.stopAllSound();
         SoundManager.fadeOutAmbience("ambience");
         //play the sound
-        createjs.Sound.play(LoadManager.Sounds.BubblesFade);
+        SoundManager.playSFX(LoadManager.Sounds.BubblesFade);
         Logging.message("Go to new game!");
         
         const data = DataManager.getLevelDataByIndex(0);
@@ -169,17 +202,6 @@ export class MenuScreen extends Screen {
         this._currentScreen = "main";
     }
 
-    private _onClearData() {
-        Logging.success("Cleared data!");
-        createjs.Tween.get(this._swipeContainer).to({x:this._game.StageWidth, y:this._game.StageHeight}, this._swipeSpeed, createjs.Ease.cubicIn);
-        // this._currentScreen = "cleared"
-        let e = window.setTimeout(() => {
-            createjs.Tween.get(this._swipeContainer).to({x:this._game.StageWidth, y:0}, this._swipeSpeed, createjs.Ease.cubicInOut);
-            window.clearInterval(e);
-            this._currentScreen = "options";
-        }, 2000);
-    }
-
     private _onDragStart(e) {
 
         this._initialSwipePos = { x:e.stageX, y:e.stageY };
@@ -220,7 +242,7 @@ export class MenuScreen extends Screen {
         this._container.addChild(this._staticContainer.Container);
         this._container.addChild(this._swipeContainer);
         this._swipeContainer.addChild(this._mainContainer);
-        this._swipeContainer.addChild(this._optionsContainer.Container);
+        this._swipeContainer.addChild(this._optionsContainer);
         this._swipeContainer.addChild(this._clearedContainer.Container);
         this._swipeContainer.addChild(this._collectedContainer);
 
@@ -236,6 +258,17 @@ export class MenuScreen extends Screen {
         });
         this._collectibleFish = [];
 
+
+        //toggle sound
+        if(SoundManager.IsSoundPlaying) {
+            this._soundOff.alpha = 0.5;
+            this._soundOn.alpha = 1;
+        }
+        else {
+            this._soundOff.alpha = 1;
+            this._soundOn.alpha = 0.5;
+        }
+
         return super.create(stage);
     }
 
@@ -249,8 +282,49 @@ export class MenuScreen extends Screen {
 
         (this._fancyFish as any).on("click", this._onFish, this);
 
-        Sprites.listenToClearData();
-        (this._optionsContainer.Sprites.btnClearData as any).on(Sprites.CLEAR_DATA, this._onClearData, this);
+        (this._btnCheat as any).on("click", () => {
+            //play the sound
+            SoundManager.playSFX(LoadManager.Sounds.BTNSelect);
+            //unlock all
+            ProgressManager.unlockAll();
+            //reload this menu
+            ScreenManager.setCurrentScreen("menu", this.Stage);
+        }, this);
+        (this._btnResetData as any).on("click", () => {
+            //play the sound
+            SoundManager.playSFX(LoadManager.Sounds.BTNSelect);
+            //kill all
+            ProgressManager.killAll();
+            ProgressManager.deleteCookieData();
+            //reload this menu
+            ScreenManager.setCurrentScreen("menu", this.Stage);
+        }, this);
+        (this._soundOff as any).on("click", () => {
+            //play the sound
+            SoundManager.playSFX(LoadManager.Sounds.BTNSelect);
+            SoundManager.stopAllSound();
+            //toggle buttons
+            this._soundOff.alpha = 1;
+            this._soundOn.alpha = 0.5;
+        }, this);
+        (this._soundOn as any).on("click", () => {
+            //play the sound
+            SoundManager.playSFX(LoadManager.Sounds.BTNSelect);
+            SoundManager.playAllSound();
+            //toggle buttons
+            this._soundOff.alpha = 0.5;
+            this._soundOn.alpha = 1;
+        }, this);
+
+        (this._btnLeft as any).on("click", () => {
+            this._onMain();
+        }, this);
+        (this._btnRight as any).on("click", () => {
+            this._onMain();
+        }, this);
+        (this._btnUp as any).on("click", () => {
+            this._onMain();
+        }, this);
 
         //listen for swipes
         (this._staticContainer.Sprites.bg as any).on("mousedown", this._onDragStart, this);
@@ -326,8 +400,14 @@ export class MenuScreen extends Screen {
 
         this._fancyFish.removeAllEventListeners();
 
-        Sprites.stopListenToClearData();
-        (this._optionsContainer.Sprites.btnClearData as any).off(Sprites.CLEAR_DATA, this._onClearData);
+        this._btnCheat.removeAllEventListeners();
+        this._btnResetData.removeAllEventListeners();
+        this._soundOff.removeAllEventListeners();
+        this._soundOn.removeAllEventListeners();
+        this._btnLeft.removeAllEventListeners();
+        this._btnRight.removeAllEventListeners();
+        this._btnUp.removeAllEventListeners();
+
 
         //stop listen for swipes
         (this._staticContainer.Sprites.bg as any).off("mousedown", this._onDragStart);

@@ -1,10 +1,12 @@
 export class SoundManager {
     private static _ambience:{ [key:string]:createjs.AbstractSoundInstance } = {};
     private static _sfx:createjs.AbstractSoundInstance[] = [];
+    private static _isPlayingSound:boolean = true;
 
     /*--------------- METHODS ------------------------*/
     /**Plays an ambience track. */
     public static playAmbience(key:string, src:string, loop:boolean=true) {
+        if(!SoundManager._isPlayingSound) return null;
         //make sure this key is not in use
         if(SoundManager._ambience[key] != null) {
             SoundManager._ambience[key].stop();
@@ -19,6 +21,7 @@ export class SoundManager {
     }
     /**Plays an ambience track with fade in. */
     public static playAmbienceWithFadeIn(key:string, src:string, loop:boolean=true, prefVolume:number=1, duration:number=100, ) {
+        if(!SoundManager._isPlayingSound) return;
         const sound = SoundManager.playAmbience(key, src, loop);
 
         //start fade in 
@@ -44,6 +47,7 @@ export class SoundManager {
 
     /**Plays a sound effect. */
     public static playSFX(src:string, volume:number=1) {
+        if(!SoundManager._isPlayingSound) return;
         const sound = createjs.Sound.play(src);
         sound.volume = volume;
         SoundManager._sfx.push(sound);
@@ -56,6 +60,7 @@ export class SoundManager {
 
     /**Stops all queued sounds. */
     public static stopAllSound() {
+        SoundManager._isPlayingSound = false;
         //ambience
         Object.keys(SoundManager._ambience).forEach(key => {
             SoundManager._ambience[key].stop();
@@ -67,6 +72,7 @@ export class SoundManager {
 
     /**Plays any queued sounds. */
     public static playAllSound() {
+        SoundManager._isPlayingSound = true;
          //ambience
         Object.keys(SoundManager._ambience).forEach(key => {
             const sound = SoundManager._ambience[key];
@@ -136,4 +142,5 @@ export class SoundManager {
     /*--------------- EVENTS -------------------------*/
     /*--------------- OVERRIDES ----------------------*/
     /*--------------- GETTERS & SETTERS --------------*/
+    public static get IsSoundPlaying() { return SoundManager._isPlayingSound; }
 }

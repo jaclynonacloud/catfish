@@ -178,4 +178,23 @@ export class Game {
     /*--------------- GETTERS & SETTERS --------------*/
 
 
+    //generate levels
+    /*
+    let data = [];
+    for(let i = 0; i < 15; i++) {
+        data.push({
+        id: (Math.random() > 0.8) ? "puffer" : "fish",
+        x: Math.floor(Math.random() * 500 + 50),
+        y: Math.floor(Math.random() * 850 + 10),
+        speed: parseFloat((Math.random() * 5 + 2).toFixed(2)),
+        flip: Math.random() > 0.5 ? true : false
+        });
+    }
+
+    console.log(data);
+
+    console.log(JSON.stringify(data, null, 2));
+    */
+
+
 }

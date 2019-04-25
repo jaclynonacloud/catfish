@@ -88,6 +88,12 @@ export class TutorialCreator {
                         this._gameScreen.unpauseGameLogic();
                         res();
                         break;
+                    case TutorialCreator.KEY.Many :
+                        await this._runMany();
+                        await this._transition(null);
+                        this._gameScreen.unpauseGameLogic();
+                        res();
+                        break;
 
                 }
 
@@ -210,6 +216,22 @@ export class TutorialCreator {
             this._gameScreen.pauseGameLogic();
             //overlay screen
             this._gameScreen.Container.addChild(this._specialOverlay);
+            //listen for screen click
+            (this._game.Stage).on("pressup", () => { 
+                res();
+            }, true, true);
+        });
+
+    }
+
+    private async _runMany() {
+
+        return new Promise((res, rej) => {
+            this._currentOverlay = this._manyOverlay;
+            //pause the game
+            this._gameScreen.pauseGameLogic();
+            //overlay screen
+            this._gameScreen.Container.addChild(this._manyOverlay);
             //listen for screen click
             (this._game.Stage).on("pressup", () => { 
                 res();

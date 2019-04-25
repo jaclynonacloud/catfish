@@ -10,17 +10,23 @@
             },
             { 
                 "name": "A new adventure!", 
+                "music": "notsosmoothcriminal",
                 "data":[
-                    { "id":"fish", "x":0, "y":0, "speed":3 },
-                    { "id":"fish", "x":100, "y":100, "speed":3 }
+                    { "id":"fish", "x":0, "y":10, "speed":2 },
+                    { "id":"fish", "x":100, "y":150, "speed":2 },
+                    { "id":"fish", "x":300, "y":500, "speed":2 }
                 ]
             },
             { 
                 "name": "Learn to aim!",
+                "tutorials": ["many"],
                 "music": "dootdootdoot",
                 "data":[
-                    { "id":"fish", "x":0, "y":0, "speed":3 },
-                    { "id":"fish", "x":100, "y":100, "speed":3 }
+                    { "id":"fish", "x":580, "y":0, "speed":2, "flip":true },
+                    { "id":"fish", "x":440, "y":200, "speed":2, "flip":true },
+                    { "id":"fish", "x":300, "y":400, "speed":2, "flip":true },
+                    { "id":"fish", "x":220, "y":600, "speed":2, "flip":true },
+                    { "id":"fish", "x":140, "y":800, "speed":2, "flip":true }
                 ]
             },
             { 
@@ -30,10 +36,11 @@
                 "special":true,
                 "unlocks":"Persephone",
                 "data":[
-                    { "id":"fish", "x":0, "y":0, "speed":4 },
                     { "id":"fish", "x":100, "y":100, "speed":3.5 },
                     { "id":"fish", "x":280, "y":300, "speed":3.5, "flip":true },
-                    { "id":"persephone", "x":230, "y":480, "speed":3 }
+                    { "id":"persephone", "x":230, "y":480, "speed":3 },
+                    { "id":"fish", "x":400, "y":700, "speed":3.5, "flip":true },
+                    { "id":"fish", "x":0, "y":810, "speed":4 }
                 ]
             }
         ],
@@ -56,17 +63,29 @@
                 "music": "babylevels",
                 "background": "bg2",
                 "data":[
-                    { "id":"fish", "x":0, "y":0, "speed":3 },
-                    { "id":"fish", "x":100, "y":100, "speed":3 }
+                    { "id":"puffer", "x":0, "y":0, "speed":2 },
+                    { "id":"fish", "x":250, "y":180, "speed":3 },
+                    { "id":"fish", "x":100, "y":240, "speed":3.5 },
+                    { "id":"fish", "x":400, "y":350, "speed":3, "flip":true },
+                    { "id":"fish", "x":350, "y":500, "speed":3 },
+                    { "id":"fish", "x":500, "y":640, "speed":2 },
+                    { "id":"fish", "x":120, "y":800, "speed":2.5, "flip":true }
                 ]
             },
             { 
-                "name": "Barnacles ahoy!",
+                "name": "Swan dive!",
                 "music": "pixiesticks",
                 "background": "bg2",
                 "data":[
                     { "id":"fish", "x":0, "y":0, "speed":3 },
-                    { "id":"fish", "x":100, "y":100, "speed":3 }
+                    { "id":"fish", "x":100, "y":100, "speed":3 },
+                    { "id":"fish", "x":200, "y":200, "speed":3 },
+                    { "id":"fish", "x":300, "y":300, "speed":3 },
+                    { "id":"fish", "x":400, "y":400, "speed":3 },
+                    { "id":"fish", "x":300, "y":500, "speed":3 },
+                    { "id":"fish", "x":200, "y":600, "speed":3 },
+                    { "id":"fish", "x":100, "y":700, "speed":3 },
+                    { "id":"fish", "x":0, "y":800, "speed":3 }
                 ]
             },
             { 
@@ -76,9 +95,12 @@
                 "background": "bg2",
                 "unlocks":"Owen",
                 "data":[
-                    { "id":"fish", "x":0, "y":0, "speed":3 },
-                    { "id":"fish", "x":100, "y":100, "speed":3 },
-                    { "id":"owen", "x":230, "y":480, "speed":3 }
+                    { "id":"fish", "x":0, "y":100, "speed":3 },
+                    { "id":"fish", "x":100, "y":200, "speed":3 },
+                    { "id":"puffer", "x":230, "y":400, "speed":2.9 },
+                    { "id":"owen", "x":230, "y":480, "speed":3 },
+                    { "id":"fish", "x":100, "y":700, "speed":3 },
+                    { "id":"fish", "x":350, "y":900, "speed":3.5 }
                 ]
             }
         ],
@@ -88,11 +110,62 @@
                 "music": "swamplands",
                 "background": "bg3",
                 "data":[
-                    { "id":"fish", "x":100, "y":150, "speed":2 },
-                    { "id":"fish", "x":50, "y":300, "speed":4 },
-                    { "id":"fish", "x":250, "y":600, "speed":4.5, "flip":true },
-                    { "id":"fish", "x":120, "y":750, "speed":3.5, "flip":false },
-                    { "id":"puffer", "x":390, "y":310, "speed":3, "flip":false }
+                {
+                    "id": "puffer",
+                    "x": 191,
+                    "y": 347,
+                    "speed": 4.03,
+                    "flip": true
+                },
+                {
+                    "id": "puffer",
+                    "x": 128,
+                    "y": 673,
+                    "speed": 4.9,
+                    "flip": false
+                },
+                {
+                    "id": "puffer",
+                    "x": 514,
+                    "y": 316,
+                    "speed": 3.57,
+                    "flip": true
+                },
+                {
+                    "id": "puffer",
+                    "x": 112,
+                    "y": 550,
+                    "speed": 4.43,
+                    "flip": false
+                },
+                {
+                    "id": "fish",
+                    "x": 94,
+                    "y": 523,
+                    "speed": 4.92,
+                    "flip": false
+                },
+                {
+                    "id": "puffer",
+                    "x": 213,
+                    "y": 709,
+                    "speed": 4.94,
+                    "flip": true
+                },
+                {
+                    "id": "puffer",
+                    "x": 294,
+                    "y": 539,
+                    "speed": 4.74,
+                    "flip": false
+                },
+                {
+                    "id": "fish",
+                    "x": 396,
+                    "y": 649,
+                    "speed": 4.37,
+                    "flip": false
+                }
                 ]
             },
             { 
@@ -100,29 +173,147 @@
                 "music": "justlikemomusedtosynth",
                 "background": "bg3",
                 "data":[
-                    { "id":"fish", "x":0, "y":0, "speed":3 },
-                    { "id":"fish", "x":100, "y":100, "speed":3 }
+                    { "id":"fish", "x":0, "y":0, "speed":4 },
+                    { "id":"fish", "x":100, "y":100, "speed":4 },
+                    { "id":"fish", "x":60, "y":200, "speed":4 },
+                    { "id":"fish", "x":500, "y":250, "speed":4 },
+                    { "id":"fish", "x":400, "y":350, "speed":4 },
+                    { "id":"fish", "x":400, "y":600, "speed":4, "flip":true },
+                    { "id":"fish", "x":250, "y":820, "speed":5, "flip":true }
                 ]
             },
             { 
                 "name": "Wet waters!",
-                "music": "pixiesticks",
+                "music": "iforgotaboutthissong",
                 "background": "bg3",
                 "data":[
-                    { "id":"fish", "x":0, "y":0, "speed":3 },
-                    { "id":"fish", "x":100, "y":100, "speed":3 }
+                    { "id":"fish", "x":10, "y":0, "speed":5 },
+                    { "id":"fish", "x":100, "y":100, "speed":5.5 },
+                    { "id":"fish", "x":250, "y":150, "speed":5.2, "flip":true },
+                    { "id":"fish", "x":500, "y":180, "speed":5 },
+                    { "id":"fish", "x":400, "y":250, "speed":6 },
+                    { "id":"puffer", "x":325, "y":300, "speed":2, "flip":true },
+                    { "id":"fish", "x":150, "y":325, "speed":3 },
+                    { "id":"fish", "x":250, "y":380, "speed":5.1 },
+                    { "id":"fish", "x":300, "y":450, "speed":3.3, "flip":true },
+                    { "id":"puffer", "x":220, "y":580, "speed":4, "flip":true },
+                    { "id":"fish", "x":520, "y":680, "speed":4.5 },
+                    { "id":"fish", "x":100, "y":800, "speed":1.5 },
+                    { "id":"fish", "x":50, "y":850, "speed":3}
                 ]
             },
             { 
                 "name": "Riley!", 
                 "special":true,
                 "music": "theendquestionmark",
-                "background": "bg3",
+                "background": "bg4",
                 "unlocks":"Riley",
                 "data":[
-                    { "id":"fish", "x":0, "y":0, "speed":3 },
-                    { "id":"fish", "x":100, "y":100, "speed":3 },
-                    { "id":"riley", "x":230, "y":480, "speed":3 }
+                {
+                    "id": "fish",
+                    "x": 99,
+                    "y": 40,
+                    "speed": 2.74,
+                    "flip": true
+                },
+                {
+                    "id": "fish",
+                    "x": 120,
+                    "y": 414,
+                    "speed": 3.89,
+                    "flip": false
+                },
+                {
+                    "id": "fish",
+                    "x": 422,
+                    "y": 679,
+                    "speed": 2.85,
+                    "flip": true
+                },
+                {
+                    "id": "fish",
+                    "x": 337,
+                    "y": 441,
+                    "speed": 4.42,
+                    "flip": false
+                },
+                {
+                    "id": "puffer",
+                    "x": 217,
+                    "y": 407,
+                    "speed": 2.87,
+                    "flip": false
+                },
+                {
+                    "id": "fish",
+                    "x": 393,
+                    "y": 280,
+                    "speed": 6.16,
+                    "flip": true
+                },
+                {
+                    "id": "fish",
+                    "x": 389,
+                    "y": 328,
+                    "speed": 5.42,
+                    "flip": true
+                },
+                {
+                    "id": "fish",
+                    "x": 323,
+                    "y": 570,
+                    "speed": 3.1,
+                    "flip": false
+                },
+                {
+                    "id": "puffer",
+                    "x": 131,
+                    "y": 427,
+                    "speed": 4.86,
+                    "flip": false
+                },
+                {
+                    "id": "fish",
+                    "x": 535,
+                    "y": 111,
+                    "speed": 4.9,
+                    "flip": false
+                },
+                {
+                    "id": "puffer",
+                    "x": 398,
+                    "y": 123,
+                    "speed": 5.19,
+                    "flip": true
+                },
+                {
+                    "id": "riley",
+                    "x": 273,
+                    "y": 459,
+                    "speed": 2.64,
+                    "flip": true
+                },
+                {
+                    "id": "fish",
+                    "x": 162,
+                    "y": 98,
+                    "speed": 3.25,
+                    "flip": false
+                },
+                {
+                    "id": "puffer",
+                    "x": 216,
+                    "y": 733,
+                    "speed": 5.36,
+                    "flip": false
+                },
+                {
+                    "id": "fish",
+                    "x": 283,
+                    "y": 284,
+                    "speed": 2.28,
+                    "flip": true
+                }
                 ]
             }
         ]

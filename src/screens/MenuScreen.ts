@@ -100,6 +100,10 @@ export class MenuScreen extends Screen {
         this._soundOn.x = this._soundOff.x = 240;
         this._soundOn.y = this._soundOff.y = 240;
         this._soundOff.x += 130;
+        this._btnCheat.x = (this._game.StageWidth / 2) - this._btnCheat.getBounds().width / 2;
+        this._btnResetData.x = (this._game.StageWidth / 2) - this._btnResetData.getBounds().width / 2;
+        this._btnCheat.y = (this._game.StageHeight * 0.8);
+        this._btnResetData.y = 350;
 
         this._optionsContainer.addChild(
             optionsBG, this._btnResetData, this._btnCheat, this._soundOff, this._soundOn

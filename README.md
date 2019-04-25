@@ -7,6 +7,8 @@ A game where you are a cat catching fish.
 - Clone repo: `git clone https://github.com/jaclynonacloud/catfish.git`
 - `yarn` or `npm install`
 - `http-server` or use Live Server extension in VS-Code
+#### To Run Development
+- `gulp watch`
 
 ### How to Play
 - Deployment can be found here: https://jaclynonacloud.github.io/catfish/
